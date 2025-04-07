@@ -1,4 +1,4 @@
-package com.pbl.pbl_be.model;
+package com.pbl.pbl_be.model.PM;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -28,5 +28,8 @@ public class Project {
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
 
+    public void setId(Long id) {
+        this.project_id = id;
+    }
 }
 
