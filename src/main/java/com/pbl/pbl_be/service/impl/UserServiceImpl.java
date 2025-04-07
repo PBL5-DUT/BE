@@ -35,16 +35,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO registerNewUser(UserDTO userDTO) {
+        // Chuyển đổi từ DTO sang entity User
         User user = this.mm.map(userDTO, User.class);
+
+        // Mã hóa mật khẩu trước khi lưu
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
 
-        Role role = this.roleRepo.findById(AppConstants.vlt)
-                .orElseThrow(() -> new ResourceNotFoundException("Role", "roleId", AppConstants.vlt));
+        // Lấy vai trò "vlt" từ cơ sở dữ liệu (hoặc bất kỳ vai trò nào bạn muốn gán cho người dùng)
+        Role role = this.roleRepo.findByRoleName("vlt")
+                .orElseThrow(() -> new ResourceNotFoundException("Role", "roleName", AppConstants.vlt));  // Sửa ở đây: Thêm dấu phẩy
+
+        // Thêm vai trò vào người dùng
         user.getRoles().add(role);
+
+        // Lưu người dùng vào cơ sở dữ liệu
         User newUser = this.userRepo.save(user);
 
+        // Trả về UserDTO sau khi lưu
         return this.mm.map(newUser, UserDTO.class);
     }
+
 
 
     @Override

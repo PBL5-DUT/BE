@@ -7,5 +7,5 @@ public class AppConstants {
     public static final String SORT_BY = "postId";
     public static final String SORT_DIR = "asc";
     public static final Integer vlt = 1;
-    public static final Integer ADMIN_USER=3;
+    public static final Integer admin=3;
 }

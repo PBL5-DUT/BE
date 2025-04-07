@@ -9,6 +9,7 @@ import com.pbl.pbl_be.dto.JwtAuthRequest;
 import com.pbl.pbl_be.dto.JwtAuthResponse;
 import com.pbl.pbl_be.dto.UserDTO;
 import com.pbl.pbl_be.repository.UserRepository;
+import com.pbl.pbl_be.security.CustomUserDetails;
 import com.pbl.pbl_be.security.JwtTokenHelper;
 import com.pbl.pbl_be.service.UserService;
 import jakarta.validation.Valid;
@@ -56,9 +57,13 @@ public class AuthController {
 
         JwtAuthResponse response = new JwtAuthResponse();
         response.setToken(token);
-        response.setUser(this.mapper.map((User) userDetails, UserDTO.class));
+
+        CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
+        response.setUser(this.mapper.map(customUserDetails.getUser(), UserDTO.class));
+
         return new ResponseEntity<JwtAuthResponse>(response, HttpStatus.OK);
     }
+
 
     private void authenticate(String username, String password) throws Exception {
 
@@ -76,7 +81,6 @@ public class AuthController {
 
     }
 
-    // register new user api
 
     @PostMapping("/register")
     public ResponseEntity<UserDTO> registerUser(@Valid @RequestBody UserDTO userDTO) {
