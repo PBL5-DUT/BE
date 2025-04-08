@@ -1,6 +1,6 @@
-package com.pbl.pbl_be.repository.PM;
+package com.pbl.pbl_be.repository;
 
-import com.pbl.pbl_be.model.PM.Project;
+import com.pbl.pbl_be.model.Project;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

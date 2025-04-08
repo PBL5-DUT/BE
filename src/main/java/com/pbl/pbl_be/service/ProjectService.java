@@ -1,7 +1,7 @@
-package com.pbl.pbl_be.service.PM;
+package com.pbl.pbl_be.service;
 
-import com.pbl.pbl_be.model.PM.Project;
-import com.pbl.pbl_be.repository.PM.ProjectRepository;
+import com.pbl.pbl_be.model.Project;
+import com.pbl.pbl_be.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

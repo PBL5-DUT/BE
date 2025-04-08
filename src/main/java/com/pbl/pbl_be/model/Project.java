@@ -1,4 +1,4 @@
-package com.pbl.pbl_be.model.PM;
+package com.pbl.pbl_be.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;

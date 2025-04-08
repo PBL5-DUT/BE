@@ -1,7 +1,7 @@
-package com.pbl.pbl_be.controller.PM;
+package com.pbl.pbl_be.controller;
 
-import com.pbl.pbl_be.model.PM.Project;
-import com.pbl.pbl_be.service.PM.ProjectService;
+import com.pbl.pbl_be.model.Project;
+import com.pbl.pbl_be.service.ProjectService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
