@@ -1,8 +1,7 @@
 package com.pbl.pbl_be.controller;
 
 import com.pbl.pbl_be.model.Project;
-import com.pbl.pbl_be.repository.ProjectRepository;
-import org.springframework.http.HttpStatus;
+import com.pbl.pbl_be.service.ProjectService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,26 +11,37 @@ import java.util.List;
 @RequestMapping("/api/projects")
 @CrossOrigin(origins = "http://localhost:5173")
 public class ProjectController {
-    private final ProjectRepository projectRepository;
 
-    public ProjectController(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
+    private final ProjectService projectService;
+
+    public ProjectController(ProjectService projectService) {
+        this.projectService = projectService;
     }
 
-    // Lấy tất cả các dự án
     @GetMapping
     public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+        return projectService.getAllProjects();
     }
 
-    // Thêm mới dự án
     @PostMapping
     public ResponseEntity<Project> createProject(@RequestBody Project project) {
-        // Lưu dự án vào cơ sở dữ liệu
-        Project savedProject = projectRepository.save(project);
-
-        // Trả về thông tin dự án đã lưu cùng với mã trạng thái CREATED
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedProject);
+        Project savedProject = projectService.createProject(project);
+        return ResponseEntity.status(201).body(savedProject);
     }
-}
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Project> getProjectById(@PathVariable Long id) {
+        return projectService.getProjectById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Project> updateProject(@PathVariable Long id, @RequestBody Project project) {
+        // Đảm bảo rằng id được sử dụng trong project để cập nhật đúng
+        project.setId(id); // Set id từ URL vào đối tượng project
+        Project updatedProject = projectService.updateProject(project);
+        return ResponseEntity.ok(updatedProject); // Trả về mã trạng thái 200 OK
+    }
+
+}

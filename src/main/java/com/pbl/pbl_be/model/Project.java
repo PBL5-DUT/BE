@@ -28,5 +28,8 @@ public class Project {
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
 
+    public void setId(Long id) {
+        this.project_id = id;
+    }
 }
 
