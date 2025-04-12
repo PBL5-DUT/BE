@@ -21,6 +21,7 @@ public class Project {
     private String location;
     private String avatar_filepath;
 
+
     @ManyToOne
     @JoinColumn(name = "parent_project_id")
     private Project parent_project;
@@ -31,6 +32,8 @@ public class Project {
 
     private LocalDateTime start_time;
     private LocalDateTime end_time;
+
+    private Integer max_participants;
 
     @Enumerated(EnumType.STRING)
     private Status status;

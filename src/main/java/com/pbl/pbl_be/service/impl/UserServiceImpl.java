@@ -71,10 +71,10 @@ public class UserServiceImpl implements UserService {
 
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
-        user.setFullName(userDTO.getFullName());
+        user.setFull_name(userDTO.getFull_name());
         user.setPhone(userDTO.getPhone());
         user.setAddress(userDTO.getAddress());
-        user.setAvatarFilepath(userDTO.getAvatarFilepath());
+        user.setAvatar_filepath(userDTO.getAvatar_filepath());
 
         if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
             user.setPassword(this.passwordEncoder.encode(userDTO.getPassword()));
