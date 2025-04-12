@@ -17,7 +17,7 @@ import java.util.Set;
 public class UserDTO
 {
 
-    private Integer userId;
+    private Integer user_id;
     @NotNull
     private String username;
     @Email
@@ -25,12 +25,12 @@ public class UserDTO
     @NotNull
     private String password;
 
-    private String fullName;
+    private String full_name;
     private String phone;
     private String address;
-    private String avatarFilepath;
+    private String avatar_filepath;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime created_at;
+    private LocalDateTime updated_at;
     private Set<Role> roles = new HashSet<>();
 }

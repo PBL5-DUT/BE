@@ -5,15 +5,22 @@ import lombok.Data;
 
 @Entity
 @Table(name = "roles")
-@Data
 public class Role {
-
     @Id
-    @Column(name = "role_id")
-    private int roleId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer role_id;
 
-    @Column(name = "role_name", unique = true)
-    private String roleName;
+    @Column(nullable = false, unique = true)
+    @Enumerated(EnumType.STRING)
+    private RoleName role_name;
+
+    public enum RoleName {
+        vlt, pm, admin
+    }
+
+    public String getRoleName() {
+        return role_name.name();
+    }
 }
 
 
