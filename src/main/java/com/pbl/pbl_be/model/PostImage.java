@@ -1,4 +1,5 @@
 package com.pbl.pbl_be.model;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,12 +12,15 @@ public class PostImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long image_id;
+    @Column(name = "image_id")
+    private Long imageId;
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-    private String image_filepath;
-    private LocalDateTime created_at;
+    private String imageFilepath;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }

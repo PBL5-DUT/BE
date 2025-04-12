@@ -1,9 +1,9 @@
 package com.pbl.pbl_be.model;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
-
 
 @Entity
 @Table(name = "posts")
@@ -12,7 +12,8 @@ public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long post_id;
+    @Column(name = "post_id")
+    private Long postId;
 
     @ManyToOne
     @JoinColumn(name = "forum_id", nullable = false)
@@ -28,8 +29,11 @@ public class Post {
     @Enumerated(EnumType.STRING)
     private Status status = Status.pending;
 
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public enum Status {
         pending, approved, rejected

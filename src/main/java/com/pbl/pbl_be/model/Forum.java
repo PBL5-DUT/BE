@@ -1,4 +1,5 @@
 package com.pbl.pbl_be.model;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,12 +12,15 @@ public class Forum {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long forum_id;
+    @Column(name = "forum_id")
+    private Long forumId;
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
     private String title;
-    private LocalDateTime created_at;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }

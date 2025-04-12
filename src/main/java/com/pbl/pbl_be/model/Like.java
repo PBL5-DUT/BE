@@ -1,4 +1,5 @@
 package com.pbl.pbl_be.model;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +12,8 @@ public class Like {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long like_id;
+    @Column(name = "like_id")
+    private Long likeId;
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
@@ -21,5 +23,6 @@ public class Like {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private LocalDateTime created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }

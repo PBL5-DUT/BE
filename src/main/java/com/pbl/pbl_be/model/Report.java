@@ -1,4 +1,5 @@
 package com.pbl.pbl_be.model;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,12 +12,14 @@ public class Report {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long report_id;
+    @Column(name = "report_id")
+    private Long reportId;
 
     @Enumerated(EnumType.STRING)
-    private ReportType report_type;
+    private ReportType reportType;
 
-    private Long report_item_id;
+    @Column(name = "report_item_id")
+    private Long reportItemId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -28,7 +31,8 @@ public class Report {
     @Enumerated(EnumType.STRING)
     private ReportStatus status = ReportStatus.pending;
 
-    private LocalDateTime created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     public enum ReportType {
         post, comment, user

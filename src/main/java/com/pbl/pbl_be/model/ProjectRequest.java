@@ -1,4 +1,5 @@
 package com.pbl.pbl_be.model;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +12,8 @@ public class ProjectRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long request_id;
+    @Column(name = "request_id")
+    private Long requestId;
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
@@ -24,10 +26,10 @@ public class ProjectRequest {
     @Enumerated(EnumType.STRING)
     private Status status = Status.pending;
 
-    private LocalDateTime created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     public enum Status {
         pending, approved, rejected, left
     }
 }
-

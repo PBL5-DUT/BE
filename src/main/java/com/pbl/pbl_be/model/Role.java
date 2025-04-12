@@ -6,21 +6,21 @@ import lombok.Data;
 @Entity
 @Table(name = "roles")
 public class Role {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer role_id;
+    @Column(name = "role_id")
+    private Integer roleId;
 
     @Column(nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
-    private RoleName role_name;
+    private RoleName roleName;
 
     public enum RoleName {
         vlt, pm, admin
     }
 
     public String getRoleName() {
-        return role_name.name();
+        return roleName.name();
     }
 }
-
-

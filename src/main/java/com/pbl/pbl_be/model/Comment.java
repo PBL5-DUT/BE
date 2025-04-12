@@ -1,4 +1,5 @@
 package com.pbl.pbl_be.model;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +12,8 @@ public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long comment_id;
+    @Column(name = "comment_id")
+    private Long commentId;
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
@@ -26,7 +28,8 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "parent_comment_id")
-    private Comment parent_comment;
+    private Comment parentComment;
 
-    private LocalDateTime created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }

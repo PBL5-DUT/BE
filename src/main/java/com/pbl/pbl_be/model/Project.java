@@ -3,7 +3,6 @@ package com.pbl.pbl_be.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,32 +13,38 @@ public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long project_id;
+    @Column(name = "project_id")
+    private Long projectId;
 
     private String name;
     private String description;
     private String location;
-    private String avatar_filepath;
-
+    private String avatarFilepath;
 
     @ManyToOne
     @JoinColumn(name = "parent_project_id")
-    private Project parent_project;
+    private Project parentProject;
 
     @ManyToOne
     @JoinColumn(name = "pm_id", nullable = false)
     private User pm;
 
-    private LocalDateTime start_time;
-    private LocalDateTime end_time;
+    @Column(name = "start_time")
+    private LocalDateTime startTime;
 
-    private Integer max_participants;
+    @Column(name = "end_time")
+    private LocalDateTime endTime;
+
+    private Integer maxParticipants;
 
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public enum Status {
         pending, approved, rejected, locked, finished, draft

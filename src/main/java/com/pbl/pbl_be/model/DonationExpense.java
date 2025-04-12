@@ -1,4 +1,5 @@
 package com.pbl.pbl_be.model;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +12,8 @@ public class DonationExpense {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long expense_id;
+    @Column(name = "expense_id")
+    private Long expenseId;
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
@@ -30,5 +32,6 @@ public class DonationExpense {
     @Column(columnDefinition = "TEXT")
     private String purpose;
 
-    private LocalDateTime created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }

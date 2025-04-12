@@ -1,4 +1,5 @@
 package com.pbl.pbl_be.model;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +12,8 @@ public class Donation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long donation_id;
+    @Column(name = "donation_id")
+    private Long donationId;
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
@@ -22,6 +24,7 @@ public class Donation {
     private User user;
 
     private Long amount;
-    private LocalDateTime created_at;
-}
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+}

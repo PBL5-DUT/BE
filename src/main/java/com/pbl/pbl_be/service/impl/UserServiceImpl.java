@@ -42,8 +42,8 @@ public class UserServiceImpl implements UserService {
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
 
         // Lấy vai trò "vlt" từ cơ sở dữ liệu (hoặc bất kỳ vai trò nào bạn muốn gán cho người dùng)
-        Role role = this.roleRepo.findByRoleName("vlt")
-                .orElseThrow(() -> new ResourceNotFoundException("Role", "roleName", AppConstants.vlt));  // Sửa ở đây: Thêm dấu phẩy
+        Role role = this.roleRepo.findByRoleName(Role.RoleName.vlt)
+                .orElseThrow(() -> new ResourceNotFoundException("Role", "role_name", AppConstants.vlt));
 
         // Thêm vai trò vào người dùng
         user.getRoles().add(role);
@@ -71,10 +71,10 @@ public class UserServiceImpl implements UserService {
 
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
-        user.setFull_name(userDTO.getFull_name());
+        user.setFullName(userDTO.getFull_name());
         user.setPhone(userDTO.getPhone());
         user.setAddress(userDTO.getAddress());
-        user.setAvatar_filepath(userDTO.getAvatar_filepath());
+        user.setAvatarFilepath(userDTO.getAvatar_filepath());
 
         if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
             user.setPassword(this.passwordEncoder.encode(userDTO.getPassword()));

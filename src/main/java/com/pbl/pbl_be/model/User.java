@@ -21,7 +21,8 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long user_id;
+    @Column(name = "user_id")
+    private Long userId;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -32,14 +33,18 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    private String full_name;
+    @Column(name = "full_name")
+    private String fullName;
+
     private String phone;
     private String address;
-    private String avatar_filepath;
+    private String avatarFilepath;
 
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

@@ -1,4 +1,5 @@
 package com.pbl.pbl_be.model;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +12,8 @@ public class ChatMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long message_id;
+    @Column(name = "message_id")
+    private Long messageId;
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
@@ -24,5 +26,6 @@ public class ChatMessage {
     @Column(columnDefinition = "TEXT")
     private String message;
 
-    private LocalDateTime created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }
