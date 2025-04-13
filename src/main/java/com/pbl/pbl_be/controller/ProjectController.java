@@ -1,7 +1,12 @@
 package com.pbl.pbl_be.controller;
 
+import com.pbl.pbl_be.dto.ProjectDTO;
+import com.pbl.pbl_be.dto.UserDTO;
 import com.pbl.pbl_be.model.Project;
 import com.pbl.pbl_be.repository.ProjectRepository;
+import com.pbl.pbl_be.service.ProjectService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,28 +15,55 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/projects")
-@CrossOrigin(origins = "http://localhost:5173")
 public class ProjectController {
+
+    @Autowired
     private final ProjectRepository projectRepository;
+
+    private ProjectService projectService;
 
     public ProjectController(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
     }
 
-    // Lấy tất cả các dự án
-    @GetMapping
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+
+    @GetMapping("/")
+    public List<ProjectDTO> getAllProjects() {
+        return projectService.getAllProjects();
     }
 
-    // Thêm mới dự án
-    @PostMapping
-    public ResponseEntity<Project> createProject(@RequestBody Project project) {
-        // Lưu dự án vào cơ sở dữ liệu
-        Project savedProject = projectRepository.save(project);
+    @GetMapping("/{projectId}")
+    public ResponseEntity<ProjectDTO> getProjectById(@PathVariable Integer projectId){
+        return ResponseEntity.ok(this.projectService.getProjectById(projectId));
+    }
 
-        // Trả về thông tin dự án đã lưu cùng với mã trạng thái CREATED
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedProject);
+    @PostMapping
+    public ResponseEntity<ProjectDTO> createProject(@RequestBody @Valid ProjectDTO project) {
+        ProjectDTO createdProject = this.projectService.createProject(project);
+        return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
+    }
+    @PutMapping("/{projectId}")
+    public ResponseEntity<ProjectDTO> updateProject(@PathVariable Integer projectId, @Valid @RequestBody ProjectDTO project) {
+        ProjectDTO updatedProject = this.projectService.updateProject(projectId, project);
+        return ResponseEntity.ok(updatedProject);
+    }
+
+    @DeleteMapping("/{projectId}")
+    public ResponseEntity<Void> deleteProject(@PathVariable Integer projectId) {
+        this.projectService.deleteProject(projectId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/approved")
+    public List<ProjectDTO> getApprovedProjectsSorted(
+            @RequestParam(defaultValue = "startTime") String sort,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        if (!List.of("startTime", "endTime", "maxParticipants").contains(sort)) {
+            throw new IllegalArgumentException("Sort field không hợp lệ!");
+        }
+
+        return projectService.getApprovedProjectsSorted(sort, direction);
     }
 }
 

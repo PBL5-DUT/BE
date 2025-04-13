@@ -13,7 +13,7 @@ public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "report_id")
-    private Long reportId;
+    private Integer reportId;
 
     @Enumerated(EnumType.STRING)
     private ReportType reportType;

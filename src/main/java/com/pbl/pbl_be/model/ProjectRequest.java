@@ -13,7 +13,7 @@ public class ProjectRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id")
-    private Long requestId;
+    private Integer requestId;
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)

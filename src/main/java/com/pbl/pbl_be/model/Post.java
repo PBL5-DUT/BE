@@ -13,7 +13,7 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
-    private Long postId;
+    private Integer postId;
 
     @ManyToOne
     @JoinColumn(name = "forum_id", nullable = false)

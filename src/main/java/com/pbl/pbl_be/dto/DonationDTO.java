@@ -1,14 +1,11 @@
 package com.pbl.pbl_be.dto;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+
 import java.time.LocalDateTime;
 
-@Getter @Setter
-public class ProjectLikeDTO {
-    private Integer likeId;
+public class DonationDTO {
+    private Integer donationId;
     private Integer projectId;
     private Integer userId;
+    private Long amount;
     private LocalDateTime createdAt;
 }
-

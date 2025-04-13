@@ -13,7 +13,7 @@ public class PostImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "image_id")
-    private Long imageId;
+    private Integer imageId;
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)

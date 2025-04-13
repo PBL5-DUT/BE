@@ -13,7 +13,7 @@ public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "message_id")
-    private Long messageId;
+    private Integer messageId;
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)

@@ -6,13 +6,9 @@ import com.pbl.pbl_be.dto.UserDTO;
 import java.util.List;
 
 public interface UserService {
-    UserDTO registerNewUser(UserDTO user);
-    UserDTO createUser(UserDTO user);
-    UserDTO updateUser(UserDTO user,Integer userId);
-    UserDTO getUserById(Integer userId);
     List<UserDTO> getAllUser();
+    UserDTO getUserById(Integer userId);
+    UserDTO updateUser(UserDTO user);
     void deleteUser(Integer userId);
-
-
-
+    UserDTO registerNewUser(UserDTO user);
 }

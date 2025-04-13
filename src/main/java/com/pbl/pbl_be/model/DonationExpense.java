@@ -13,7 +13,7 @@ public class DonationExpense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "expense_id")
-    private Long expenseId;
+    private Integer expenseId;
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)

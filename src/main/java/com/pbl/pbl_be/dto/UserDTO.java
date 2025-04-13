@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -17,7 +16,7 @@ import java.util.Set;
 public class UserDTO
 {
 
-    private Integer user_id;
+    private Integer userId;
     @NotNull
     private String username;
     @Email
@@ -25,12 +24,12 @@ public class UserDTO
     @NotNull
     private String password;
 
-    private String full_name;
+    private String fullName;
     private String phone;
     private String address;
-    private String avatar_filepath;
+    private String avatarFilepath;
 
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
-    private Set<Role> roles = new HashSet<>();
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private List<RoleDTO> roles;
 }

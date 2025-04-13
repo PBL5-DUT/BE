@@ -3,6 +3,8 @@ package com.pbl.pbl_be.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,7 +16,7 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "project_id")
-    private Long projectId;
+    private Integer projectId;
 
     private String name;
     private String description;
@@ -30,10 +32,10 @@ public class Project {
     private User pm;
 
     @Column(name = "start_time")
-    private LocalDateTime startTime;
+    private LocalDate startTime;
 
     @Column(name = "end_time")
-    private LocalDateTime endTime;
+    private LocalDate endTime;
 
     private Integer maxParticipants;
 
