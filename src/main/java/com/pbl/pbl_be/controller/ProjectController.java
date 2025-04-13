@@ -1,8 +1,6 @@
 package com.pbl.pbl_be.controller;
 
 import com.pbl.pbl_be.dto.ProjectDTO;
-import com.pbl.pbl_be.dto.UserDTO;
-import com.pbl.pbl_be.model.Project;
 import com.pbl.pbl_be.repository.ProjectRepository;
 import com.pbl.pbl_be.service.ProjectService;
 import jakarta.validation.Valid;
@@ -20,6 +18,7 @@ public class ProjectController {
     @Autowired
     private final ProjectRepository projectRepository;
 
+    @Autowired
     private ProjectService projectService;
 
     public ProjectController(ProjectRepository projectRepository) {
@@ -38,8 +37,8 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<ProjectDTO> createProject(@RequestBody @Valid ProjectDTO project) {
-        ProjectDTO createdProject = this.projectService.createProject(project);
+    public ResponseEntity<ProjectDTO> createProject(@RequestBody @Valid ProjectDTO projectDto) {
+        ProjectDTO createdProject = this.projectService.createProject(projectDto);
         return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
     @PutMapping("/{projectId}")
