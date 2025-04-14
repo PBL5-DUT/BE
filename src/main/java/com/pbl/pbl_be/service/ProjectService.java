@@ -10,8 +10,13 @@ public interface ProjectService {
     ProjectDTO getProjectById(Integer projectId);
     List<ProjectDTO> getProjectsByPmId(Integer userId);// dự án của user làm pm
     List<ProjectDTO> getProjectsByStatus(String status); // dự án của user làm pm
-    List<ProjectDTO> getApprovedProjectsSorted(String sort, String direction);
     ProjectDTO createProject(ProjectDTO projectDto);
     ProjectDTO updateProject(Integer projectId, ProjectDTO project);
     void deleteProject(Integer projectId);
+
+
+
+    List<ProjectDTO> getProjectsByStatusRemaining();
+
+    List<ProjectDTO> getProjectsByStatusSorted(String sort, String direction);
 }

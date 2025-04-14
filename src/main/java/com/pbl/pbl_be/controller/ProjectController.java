@@ -54,15 +54,15 @@ public class ProjectController {
     }
 
     @GetMapping("/approved")
-    public List<ProjectDTO> getApprovedProjectsSorted(
+    public List<ProjectDTO> getProjectsByStatusSorted(
             @RequestParam(defaultValue = "startTime") String sort,
-            @RequestParam(defaultValue = "asc") String direction
+            @RequestParam(defaultValue = "desc") String direction
     ) {
-        if (!List.of("startTime", "endTime", "maxParticipants").contains(sort)) {
-            throw new IllegalArgumentException("Sort field không hợp lệ!");
-        }
+        if (!List.of("startTime", "likesCount","participantsCount").contains(sort)) {
 
-        return projectService.getApprovedProjectsSorted(sort, direction);
+            return projectService.getProjectsByStatusRemaining();
+        }
+        return projectService.getProjectsByStatusSorted(sort, direction);
     }
 }
 

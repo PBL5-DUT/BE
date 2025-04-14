@@ -15,6 +15,8 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +35,9 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<ProjectDTO> getAllProjects() {
         List<Project> projects = projectRepo.findAll();
+        for (Project project : projects) {
+
+        }
         return projects.stream()
                 .map(projectMapper::toDTO)
                 .collect(Collectors.toList());
@@ -97,9 +102,51 @@ public class ProjectServiceImpl implements ProjectService {
         this.projectRepo.delete(project);
     }
 
-    public List<ProjectDTO> getApprovedProjectsSorted(String sort, String direction) {
-        Sort sortBy = Sort.by(Sort.Direction.fromString(direction), sort);
-        List<Project> projects = this.projectRepo.findAllByStatus(Project.Status.approved, sortBy);
-        return projects.stream().map(projectMapper::toDTO).collect(Collectors.toList());
+    @Override
+    public  List<ProjectDTO> getProjectsByStatusSorted(String sort, String direction) {
+        // Fetch all approved projects
+        List<Project> approvedProjects = this.projectRepo.findProjectsByStatus(Project.Status.approved);
+
+        // Convert to DTOs
+        List<ProjectDTO> projectDTOs = approvedProjects.stream()
+                .map(projectMapper::toDTO)
+                .collect(Collectors.toList());
+
+        // Sort the DTOs based on the specified attribute and direction
+        Comparator<ProjectDTO> comparator;
+        switch (sort) {
+            case "startTime":
+                comparator = Comparator.comparing(ProjectDTO::getStartTime);
+                break;
+            case "likesCount":
+                comparator = Comparator.comparing(ProjectDTO::getLikesCount);
+                break;
+            case "participantsCount":
+                comparator = Comparator.comparing(ProjectDTO::getParticipantsCount);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid sort field!");
+        }
+
+        if ("desc".equalsIgnoreCase(direction)) {
+            comparator = comparator.reversed();
+        }
+        projectDTOs.sort(comparator);
+
+        return projectDTOs;
+    }
+    @Override
+    public List<ProjectDTO> getProjectsByStatusRemaining() {
+        List<Project> approvedProjects = this.projectRepo.findProjectsByStatus(Project.Status.approved);
+
+        LocalDateTime now = LocalDateTime.now();
+        List<ProjectDTO> projectDTOs = approvedProjects.stream()
+                .filter(project -> project.getEndTime().isAfter(ChronoLocalDate.from(now))) // Filter condition
+                .map(projectMapper::toDTO)
+                .collect(Collectors.toList());
+
+        projectDTOs.sort(Comparator.comparing(ProjectDTO::getEndTime));
+
+        return projectDTOs;
     }
 }

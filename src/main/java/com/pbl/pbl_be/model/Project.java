@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -47,6 +48,8 @@ public class Project {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+
 
     public enum Status {
         pending, approved, rejected, locked, finished, draft

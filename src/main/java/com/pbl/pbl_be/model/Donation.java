@@ -19,6 +19,13 @@ public class Donation {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
+    @Column
+    private String txn_ref;
+
+    @Enumerated(EnumType.STRING)
+    private Donation.Status status = Donation.Status.pending;
+
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -27,4 +34,10 @@ public class Donation {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+
+
+    public enum Status {
+        pending, approved, failed
+    }
 }
