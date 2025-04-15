@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long project_id;
+    private Integer project_id;
 
     private String name;
     private String description;
@@ -28,7 +28,7 @@ public class Project {
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.project_id = id;
     }
 }

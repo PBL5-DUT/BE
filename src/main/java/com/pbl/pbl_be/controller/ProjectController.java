@@ -30,14 +30,14 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Project> getProjectById(@PathVariable Long id) {
+    public ResponseEntity<Project> getProjectById(@PathVariable Integer id) {
         return projectService.getProjectById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Project> updateProject(@PathVariable Long id, @RequestBody Project project) {
+    public ResponseEntity<Project> updateProject(@PathVariable Integer id, @RequestBody Project project) {
         // Đảm bảo rằng id được sử dụng trong project để cập nhật đúng
         project.setId(id); // Set id từ URL vào đối tượng project
         Project updatedProject = projectService.updateProject(project);
