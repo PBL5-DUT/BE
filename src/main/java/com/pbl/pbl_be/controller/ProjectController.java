@@ -1,11 +1,13 @@
 package com.pbl.pbl_be.controller;
 
+
 import com.pbl.pbl_be.dto.ProjectDTO;
 import com.pbl.pbl_be.repository.ProjectRepository;
 import com.pbl.pbl_be.service.ProjectService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,6 +65,5 @@ public class ProjectController {
             return projectService.getProjectsByStatusRemaining();
         }
         return projectService.getProjectsByStatusSorted(sort, direction);
-    }
-}
 
+}

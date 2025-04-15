@@ -38,6 +38,7 @@ public class Project {
     @Column(name = "end_time")
     private LocalDate endTime;
 
+
     private Integer maxParticipants;
 
     @Enumerated(EnumType.STRING)

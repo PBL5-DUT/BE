@@ -2,7 +2,10 @@ package com.pbl.pbl_be.service;
 
 import com.pbl.pbl_be.dto.ProjectDTO;
 
+
 import java.util.List;
+import java.util.Optional;
+
 
 public interface ProjectService {
 
@@ -14,9 +17,9 @@ public interface ProjectService {
     ProjectDTO updateProject(Integer projectId, ProjectDTO project);
     void deleteProject(Integer projectId);
 
-
-
     List<ProjectDTO> getProjectsByStatusRemaining();
 
+
     List<ProjectDTO> getProjectsByStatusSorted(String sort, String direction);
+
 }
