@@ -1,6 +1,7 @@
 package com.pbl.pbl_be.model;
 
 
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,7 +22,9 @@ public class Donation {
     @Column(name = "donation_id")
     private Integer donationId;
 
+
     @Column(name = "amount")
+
     private Long amount;
 
     @Column(name = "created_at")

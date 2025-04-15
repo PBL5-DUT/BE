@@ -1,34 +1,27 @@
 package com.pbl.pbl_be.service;
 
-import com.pbl.pbl_be.model.Project;
-import com.pbl.pbl_be.repository.ProjectRepository;
-import org.springframework.stereotype.Service;
+import com.pbl.pbl_be.dto.ProjectDTO;
+
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class ProjectService {
 
-    private final ProjectRepository projectRepository;
+public interface ProjectService {
 
-    public ProjectService(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
-    }
+    List<ProjectDTO> getAllProjects();
+    ProjectDTO getProjectById(Integer projectId);
+    List<ProjectDTO> getProjectsByPmId(Integer userId);// dự án của user làm pm
+    List<ProjectDTO> getProjectsByStatus(String status); // dự án của user làm pm
+    ProjectDTO createProject(ProjectDTO projectDto);
+    ProjectDTO updateProject(Integer projectId, ProjectDTO project);
+    void deleteProject(Integer projectId);
 
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
-    }
+    List<ProjectDTO> getProjectsByStatusRemaining();
+
 
     public Optional<Project> getProjectById(Integer id) {
         return projectRepository.findById(id);
     }
 
-    public Project createProject(Project project) {
-        return projectRepository.save(project);
-    }
 
-    public Project updateProject(Project project) {
-        return projectRepository.save(project);
-    }
-}

@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,37 +37,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO registerNewUser(UserDTO userDTO) {
-        // Chuyển đổi từ DTO sang entity User
         User user = this.mm.map(userDTO, User.class);
-
-        // Mã hóa mật khẩu trước khi lưu
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
 
-        // Lấy vai trò "vlt" từ cơ sở dữ liệu (hoặc bất kỳ vai trò nào bạn muốn gán cho người dùng)
-        Role role = this.roleRepo.findByRoleName("vlt")
-                .orElseThrow(() -> new ResourceNotFoundException("Role", "roleName", AppConstants.vlt));  // Sửa ở đây: Thêm dấu phẩy
+        if (user.getRoles() == null) {
+            user.setRoles(new HashSet<>());
+        }
 
-        // Thêm vai trò vào người dùng
+        Role role = this.roleRepo.findByRoleName(Role.RoleName.vlt)
+                .orElseThrow(() -> new ResourceNotFoundException("Role", "name", AppConstants.vlt));
+
         user.getRoles().add(role);
-
-        // Lưu người dùng vào cơ sở dữ liệu
+        user.setCreatedAt(LocalDateTime.now());
         User newUser = this.userRepo.save(user);
-
-        // Trả về UserDTO sau khi lưu
         return this.mm.map(newUser, UserDTO.class);
     }
 
 
-
     @Override
-    public UserDTO createUser(UserDTO userDTO) {
-        User user = this.dtoToUser(userDTO);
-        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-        return this.userToDto(userRepo.save(user));
-    }
-
-    @Override
-    public UserDTO updateUser(UserDTO userDTO, Integer userId) {
+    public UserDTO updateUser(UserDTO userDTO) {
+        int userId = userDTO.getUserId();
         User user = this.userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
 
@@ -103,9 +94,6 @@ public class UserServiceImpl implements UserService {
         this.userRepo.delete(user);
     }
 
-    private User dtoToUser(UserDTO dto) {
-        return this.mm.map(dto, User.class);
-    }
 
     private UserDTO userToDto(User user) {
         return this.mm.map(user, UserDTO.class);

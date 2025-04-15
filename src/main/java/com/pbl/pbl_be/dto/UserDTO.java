@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -32,5 +31,5 @@ public class UserDTO
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Set<Role> roles = new HashSet<>();
+    private List<RoleDTO> roles;
 }

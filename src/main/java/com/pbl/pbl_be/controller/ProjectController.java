@@ -1,7 +1,13 @@
 package com.pbl.pbl_be.controller;
 
-import com.pbl.pbl_be.model.Project;
+
+import com.pbl.pbl_be.dto.ProjectDTO;
+import com.pbl.pbl_be.repository.ProjectRepository;
 import com.pbl.pbl_be.service.ProjectService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,39 +15,56 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/projects")
-@CrossOrigin(origins = "http://localhost:5173")
 public class ProjectController {
 
-    private final ProjectService projectService;
+    @Autowired
+    private final ProjectRepository projectRepository;
 
-    public ProjectController(ProjectService projectService) {
-        this.projectService = projectService;
+    @Autowired
+    private ProjectService projectService;
+
+    public ProjectController(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
     }
 
-    @GetMapping
-    public List<Project> getAllProjects() {
+
+    @GetMapping("/")
+    public List<ProjectDTO> getAllProjects() {
         return projectService.getAllProjects();
     }
 
+    @GetMapping("/{projectId}")
+    public ResponseEntity<ProjectDTO> getProjectById(@PathVariable Integer projectId){
+        return ResponseEntity.ok(this.projectService.getProjectById(projectId));
+    }
+
     @PostMapping
-    public ResponseEntity<Project> createProject(@RequestBody Project project) {
-        Project savedProject = projectService.createProject(project);
-        return ResponseEntity.status(201).body(savedProject);
+    public ResponseEntity<ProjectDTO> createProject(@RequestBody @Valid ProjectDTO projectDto) {
+        ProjectDTO createdProject = this.projectService.createProject(projectDto);
+        return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
+    }
+    @PutMapping("/{projectId}")
+    public ResponseEntity<ProjectDTO> updateProject(@PathVariable Integer projectId, @Valid @RequestBody ProjectDTO project) {
+        ProjectDTO updatedProject = this.projectService.updateProject(projectId, project);
+        return ResponseEntity.ok(updatedProject);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Project> getProjectById(@PathVariable Integer id) {
-        return projectService.getProjectById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @DeleteMapping("/{projectId}")
+    public ResponseEntity<Void> deleteProject(@PathVariable Integer projectId) {
+        this.projectService.deleteProject(projectId);
+        return ResponseEntity.noContent().build();
+
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Project> updateProject(@PathVariable Integer id, @RequestBody Project project) {
-        // Đảm bảo rằng id được sử dụng trong project để cập nhật đúng
-        project.setId(id); // Set id từ URL vào đối tượng project
-        Project updatedProject = projectService.updateProject(project);
-        return ResponseEntity.ok(updatedProject); // Trả về mã trạng thái 200 OK
-    }
+    @GetMapping("/approved")
+    public List<ProjectDTO> getProjectsByStatusSorted(
+            @RequestParam(defaultValue = "startTime") String sort,
+            @RequestParam(defaultValue = "desc") String direction
+    ) {
+        if (!List.of("startTime", "likesCount","participantsCount").contains(sort)) {
+
+            return projectService.getProjectsByStatusRemaining();
+        }
+        return projectService.getProjectsByStatusSorted(sort, direction);
 
 }

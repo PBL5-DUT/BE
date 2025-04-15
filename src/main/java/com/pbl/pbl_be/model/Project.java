@@ -6,30 +6,57 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
-@Setter
 @Getter
+@Setter
 @Entity
 @Table(name = "projects")
 public class Project {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer project_id;
+
+    @Column(name = "project_id")
+    private Integer projectId;
+
 
     private String name;
     private String description;
     private String location;
-    private String avatar_filepath;
-    private String parent_project_id;
-    private String pm_id;
-    private LocalDate start_time;
-    private LocalDate end_time;
-    private String status;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
 
-    public void setId(Integer id) {
-        this.project_id = id;
+    private String avatarFilepath;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_project_id")
+    private Project parentProject;
+
+    @ManyToOne
+    @JoinColumn(name = "pm_id", nullable = false)
+    private User pm;
+
+    @Column(name = "start_time")
+    private LocalDate startTime;
+
+    @Column(name = "end_time")
+    private LocalDate endTime;
+
+
+    private Integer maxParticipants;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+
+
+    public enum Status {
+        pending, approved, rejected, locked, finished, draft
+
     }
 }
-

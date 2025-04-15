@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,17 +19,21 @@ import java.util.stream.Collectors;
 @Setter
 public class User implements UserDetails {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Integer id;
+    private Integer userId;
 
-    @Column(name = "username", nullable = false, unique = true)
+    @Getter
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Setter
+    @Getter
     @Column(nullable = false)
     private String password;
 
@@ -37,25 +42,22 @@ public class User implements UserDetails {
 
     private String phone;
     private String address;
-
-    @Column(name = "avatar_filepath")
     private String avatarFilepath;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
-
+    @Getter
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<Role> roles = new HashSet<>();
-
+    private Set<Role> roles = new HashSet<>(); // Initialize as an empty HashSet
     // Implement UserDetails cho Spring Security
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -64,10 +66,7 @@ public class User implements UserDetails {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public String getUsername() {
-        return this.username;
-    }
+
 
     @Override public boolean isAccountNonExpired() { return true; }
     @Override public boolean isAccountNonLocked() { return true; }
