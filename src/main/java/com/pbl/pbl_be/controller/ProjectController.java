@@ -53,6 +53,7 @@ public class ProjectController {
     public ResponseEntity<Void> deleteProject(@PathVariable Integer projectId) {
         this.projectService.deleteProject(projectId);
         return ResponseEntity.noContent().build();
+
     }
 
     @GetMapping("/approved")

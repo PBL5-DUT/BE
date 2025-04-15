@@ -16,12 +16,15 @@ public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     @Column(name = "project_id")
     private Integer projectId;
+
 
     private String name;
     private String description;
     private String location;
+
     private String avatarFilepath;
 
     @ManyToOne
@@ -54,5 +57,6 @@ public class Project {
 
     public enum Status {
         pending, approved, rejected, locked, finished, draft
+
     }
 }

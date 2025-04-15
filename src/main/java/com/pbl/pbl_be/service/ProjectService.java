@@ -20,6 +20,8 @@ public interface ProjectService {
     List<ProjectDTO> getProjectsByStatusRemaining();
 
 
-    List<ProjectDTO> getProjectsByStatusSorted(String sort, String direction);
+    public Optional<Project> getProjectById(Integer id) {
+        return projectRepository.findById(id);
+    }
 
-}
+

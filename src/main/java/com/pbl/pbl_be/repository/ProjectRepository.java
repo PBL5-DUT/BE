@@ -8,10 +8,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
 public interface ProjectRepository extends JpaRepository<Project, Integer> {
     List<Project> findProjectsByStatus(Project.Status status);
     List<Project> findAllByStatus(Project.Status status, Sort sort);
     Project findByProjectId(Integer projectId);
     List<Project> findProjectsByPm(User user);
+
 
 }
