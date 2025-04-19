@@ -61,11 +61,15 @@ public class PaymentServiceImpl implements PaymentService {
 
         // Lưu đơn hàng trước khi redirect
         Donation donation = Donation.builder()
+                .donationId(null) // sẽ được tự sinh
+                .projectId(1)
                 .amount(dto.getAmount())
                 .status("PENDING")
                 .txnRef(txnRef)
                 .createdAt(LocalDateTime.now())
+                .userId(1)
                 .build();
+
         donationRepository.save(donation);
 
         return vnpayConfig.vnp_PayUrl + "?" + query.toString();
