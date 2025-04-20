@@ -42,5 +42,9 @@ public class Donation {
     @Column(name = "user_id")
     private Integer userId;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
 }
 

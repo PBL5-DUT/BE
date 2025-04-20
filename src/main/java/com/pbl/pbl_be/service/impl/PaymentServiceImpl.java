@@ -50,8 +50,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         for (String field : fieldNames) {
             String value = vnpParams.get(field);
-            hashData.append(field).append('=').append(URLEncoder.encode(value, StandardCharsets.US_ASCII)).append('&');
-            query.append(field).append('=').append(URLEncoder.encode(value, StandardCharsets.US_ASCII)).append('&');
+            hashData.append(field).append('=').append(URLEncoder.encode(value, StandardCharsets.UTF_8)).append('&');
+            query.append(field).append('=').append(URLEncoder.encode(value, StandardCharsets.UTF_8)).append('&');
         }
         hashData.setLength(hashData.length() - 1);
         query.setLength(query.length() - 1);
@@ -62,12 +62,12 @@ public class PaymentServiceImpl implements PaymentService {
         // Lưu đơn hàng trước khi redirect
         Donation donation = Donation.builder()
                 .donationId(null) // sẽ được tự sinh
-                .projectId(1)
+                .projectId(dto.getProjectId())
                 .amount(dto.getAmount())
-                .status("PENDING")
+                .status("SUCCESS")
                 .txnRef(txnRef)
                 .createdAt(LocalDateTime.now())
-                .userId(1)
+                .userId(dto.getUserId())
                 .build();
 
         donationRepository.save(donation);
@@ -85,7 +85,7 @@ public class PaymentServiceImpl implements PaymentService {
         StringBuilder hashData = new StringBuilder();
         for (String field : fieldNames) {
             String value = params.get(field);
-            hashData.append(field).append('=').append(value).append('&');
+            hashData.append(field).append('=').append(URLEncoder.encode(value, StandardCharsets.UTF_8)).append('&');
         }
         hashData.setLength(hashData.length() - 1);
 
