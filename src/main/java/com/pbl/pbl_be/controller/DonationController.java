@@ -21,7 +21,7 @@ public class DonationController {
     public List<Donation> getDonationsByProject(@PathVariable Integer projectId) {
         return donationService.getDonationsByProjectId(projectId);
     }
-    public List<DonationDTO> getAllDonations() {
-        return donationRepository.findAllWithUserName();
-    }
+//    public List<DonationDTO> getAllDonations() {
+//        return donationRepository.findAllWithUserName();
+//    }
 }
