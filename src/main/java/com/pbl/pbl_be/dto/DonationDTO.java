@@ -1,5 +1,7 @@
 package com.pbl.pbl_be.dto;
 
+import com.pbl.pbl_be.model.Donation;
+
 import java.time.LocalDateTime;
 
 public class DonationDTO {
@@ -12,14 +14,14 @@ public class DonationDTO {
     private LocalDateTime createdAt;
     private String userName;
 
-    public DonationDTO(Integer donationId, Integer projectId ,Integer userId, Long amount, String status, String txnRef, LocalDateTime createdAt, String userName) {
-        this.userId = userId;
-        this.donationId = donationId;
-        this.projectId = projectId;
-        this.userName = userName;
-        this.createdAt = createdAt;
-        this.status = status;
-        this.txnRef = txnRef;
-        this.amount = amount;
+    public DonationDTO(Donation donation) {
+        this.userId = donation.getUser().getUserId();
+        this.donationId = donation.getDonationId();
+        this.projectId = donation.getProjectId();
+        this.userName = donation.getUser().getUsername();
+        this.createdAt = donation.getCreatedAt();
+        this.status = donation.getStatus();
+        this.txnRef = donation.getTxnRef();
+        this.amount = donation.getAmount();
     }
 }

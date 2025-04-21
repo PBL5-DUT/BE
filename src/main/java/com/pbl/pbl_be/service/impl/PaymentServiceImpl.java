@@ -4,6 +4,7 @@ package com.pbl.pbl_be.service.impl;
 import com.pbl.pbl_be.config.VNPayConfig;
 import com.pbl.pbl_be.dto.PaymentRequestDTO;
 import com.pbl.pbl_be.model.Donation;
+import com.pbl.pbl_be.model.User;
 import com.pbl.pbl_be.repository.DonationRepository;
 import com.pbl.pbl_be.service.PaymentService;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +60,8 @@ public class PaymentServiceImpl implements PaymentService {
         String secureHash = hmacSHA512(vnpayConfig.vnp_HashSecret, hashData.toString());
         query.append("&vnp_SecureHash=").append(secureHash);
 
+        User user = new User();
+        user.setUserId(dto.getUserId());
         // Lưu đơn hàng trước khi redirect
         Donation donation = Donation.builder()
                 .donationId(null) // sẽ được tự sinh
@@ -67,7 +70,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .status("SUCCESS")
                 .txnRef(txnRef)
                 .createdAt(LocalDateTime.now())
-                .userId(dto.getUserId())
+                .user(user)
                 .build();
 
         donationRepository.save(donation);
