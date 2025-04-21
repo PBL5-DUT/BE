@@ -1,5 +1,6 @@
 package com.pbl.pbl_be.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,10 +18,13 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
 public class User implements UserDetails {
 
     @Getter
     @Id
+    @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Integer userId;
@@ -66,10 +70,13 @@ public class User implements UserDetails {
                 .collect(Collectors.toList());
     }
 
-
-
     @Override public boolean isAccountNonExpired() { return true; }
     @Override public boolean isAccountNonLocked() { return true; }
     @Override public boolean isCredentialsNonExpired() { return true; }
     @Override public boolean isEnabled() { return true; }
+
+
+    public void setId(Integer userId) {
+        this.userId = userId;
+    }
 }

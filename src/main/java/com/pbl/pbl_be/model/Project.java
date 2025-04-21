@@ -20,11 +20,16 @@ public class Project {
     @Column(name = "project_id")
     private Integer projectId;
 
-
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "location")
     private String location;
 
+    @Column(name = "avatar_filepath")
     private String avatarFilepath;
 
     @ManyToOne
@@ -41,10 +46,10 @@ public class Project {
     @Column(name = "end_time")
     private LocalDate endTime;
 
-
+    @Column(name = "max_participants")
     private Integer maxParticipants;
-
     @Enumerated(EnumType.STRING)
+
     private Status status;
 
     @Column(name = "created_at")
@@ -52,8 +57,6 @@ public class Project {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-
 
     public enum Status {
         pending, approved, rejected, locked, finished, draft

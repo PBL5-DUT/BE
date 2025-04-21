@@ -39,7 +39,7 @@ public class ProjectRequestServiceImpl implements ProjectRequestService {
         ProjectRequest projectRequest = new ProjectRequest();
         projectRequest.setProject(project); // Set the project
         projectRequest.setUser(user); // Ensure userId exists in ProjectRequest
-        projectRequest.setStatus(ProjectRequest.Status.pending); // Ensure PENDING exists in Status enum
+        projectRequest.setStatus(ProjectRequest.Status.approved);
         projectRequestRepository.save(projectRequest);
     }
 }
