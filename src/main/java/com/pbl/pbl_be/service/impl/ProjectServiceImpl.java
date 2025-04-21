@@ -4,7 +4,9 @@ import com.pbl.pbl_be.dto.ProjectDTO;
 import com.pbl.pbl_be.exception.ResourceNotFoundException;
 import com.pbl.pbl_be.mapper.ProjectMapper;
 import com.pbl.pbl_be.model.Project;
+import com.pbl.pbl_be.model.ProjectLike;
 import com.pbl.pbl_be.model.User;
+import com.pbl.pbl_be.repository.ProjectLikeRepository;
 import com.pbl.pbl_be.repository.ProjectRepository;
 import com.pbl.pbl_be.repository.UserRepository;
 import com.pbl.pbl_be.service.ProjectService;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +34,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private ProjectMapper projectMapper;
+    private ProjectLikeRepository projectLikeRepo;
 
     @Override
     public List<ProjectDTO> getAllProjects() {
@@ -103,16 +107,12 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public  List<ProjectDTO> getProjectsByStatusSorted(String sort, String direction) {
-        // Fetch all approved projects
+    public List<ProjectDTO> getProjectsByStatusSorted(String sort, int userId) {
         List<Project> approvedProjects = this.projectRepo.findProjectsByStatus(Project.Status.approved);
-
-        // Convert to DTOs
         List<ProjectDTO> projectDTOs = approvedProjects.stream()
                 .map(projectMapper::toDTO)
                 .collect(Collectors.toList());
 
-        // Sort the DTOs based on the specified attribute and direction
         Comparator<ProjectDTO> comparator;
         switch (sort) {
             case "startTime":
@@ -128,15 +128,19 @@ public class ProjectServiceImpl implements ProjectService {
                 throw new IllegalArgumentException("Invalid sort field!");
         }
 
-        if ("desc".equalsIgnoreCase(direction)) {
-            comparator = comparator.reversed();
-        }
-        projectDTOs.sort(comparator);
+        projectDTOs.removeIf(projectDTO -> {
+            boolean shouldRemove = projectDTO.getPmId().equals(userId);
+            if (shouldRemove) {
+                System.out.println("Removed project with PM ID: " + projectDTO.getPmId());
+            }
+            return shouldRemove;
+        });
 
+        projectDTOs.sort(comparator.reversed());
         return projectDTOs;
     }
     @Override
-    public List<ProjectDTO> getProjectsByStatusRemaining() {
+    public List<ProjectDTO> getProjectsByStatusRemaining(int userId) {
         List<Project> approvedProjects = this.projectRepo.findProjectsByStatus(Project.Status.approved);
 
         LocalDateTime now = LocalDateTime.now();
@@ -145,8 +149,37 @@ public class ProjectServiceImpl implements ProjectService {
                 .map(projectMapper::toDTO)
                 .collect(Collectors.toList());
 
-        projectDTOs.sort(Comparator.comparing(ProjectDTO::getEndTime));
+        projectDTOs.removeIf(projectDTO -> {
+            boolean shouldRemove = projectDTO.getPmId().equals(userId);
+            if (shouldRemove) {
+                System.out.println("Removed project with PM ID: " + projectDTO.getPmId());
+            }
+            return shouldRemove;
+        });
 
+        projectDTOs.sort(Comparator.comparing(ProjectDTO::getEndTime));
         return projectDTOs;
+    }
+
+    @Override
+    public List<ProjectDTO> getProjectsLiked(int userId) {
+        User user = this.userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
+
+        List<ProjectLike> projectLikes = this.projectLikeRepo.findProjectLikesByUser(user);
+        List<Project> returnProjects = new ArrayList<>();
+
+        for (ProjectLike projectLike : projectLikes) {
+            Project project = projectLike.getProject();
+            if (project.getPm().getUserId().equals(userId)) {
+                System.out.println("Removed project with PM ID: " + project.getPm().getUserId());
+                continue;
+            }
+            returnProjects.add(project);
+        }
+
+        return returnProjects.stream()
+                .map(projectMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

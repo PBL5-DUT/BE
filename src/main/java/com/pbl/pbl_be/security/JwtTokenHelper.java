@@ -41,12 +41,16 @@ public class JwtTokenHelper {
         return expiration.before(new Date());
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, Integer userId) {
         Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.getUsername());
+        return doGenerateToken(claims, userDetails.getUsername(), userId);
+    }
+    public Integer getUserIdFromToken(String token) {
+        return getClaimFromToken(token, claims -> Integer.parseInt(claims.get("userId").toString()));
     }
 
-    private String doGenerateToken(Map<String, Object> claims, String subject) {
+    private String doGenerateToken(Map<String, Object> claims, String subject, Integer userId) {
+        claims.put("userId", userId); // Thêm userId vào claims
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)

@@ -11,5 +11,7 @@ public interface ProjectRequestRepository extends JpaRepository<ProjectRequest, 
     @Query("SELECT COUNT(pr.project.projectId) FROM ProjectRequest pr WHERE pr.status = 'approved' AND pr.project.projectId = :projectId")
     int countApprovedPmIdsByProjectId(@Param("projectId") Integer projectId);
 
+    ProjectRequest findByProject_ProjectIdAndUser_Id(int projectId, int userId);
+
     Integer countApprovedParticipantsByProject(Project project);
 }
