@@ -16,7 +16,8 @@ public interface ProjectService {
 
 
 
-    List<ProjectDTO> getProjectsByStatusRemaining();
+    List<ProjectDTO> getProjectsByStatusRemaining(int userId);
+    List<ProjectDTO> getProjectsByStatusSorted(String sort,int userId);
+    List<ProjectDTO> getProjectsLiked(int userId);
 
-    List<ProjectDTO> getProjectsByStatusSorted(String sort, String direction);
 }

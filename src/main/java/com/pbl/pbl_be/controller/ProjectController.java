@@ -3,7 +3,10 @@ package com.pbl.pbl_be.controller;
 
 import com.pbl.pbl_be.dto.ProjectDTO;
 import com.pbl.pbl_be.repository.ProjectRepository;
+import com.pbl.pbl_be.security.JwtTokenHelper;
 import com.pbl.pbl_be.service.ProjectService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +25,9 @@ public class ProjectController {
 
     @Autowired
     private ProjectService projectService;
+
+    @Autowired
+    private JwtTokenHelper jwtTokenHelper;
 
     public ProjectController(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
@@ -59,12 +65,18 @@ public class ProjectController {
     @GetMapping("/approved")
     public List<ProjectDTO> getProjectsByStatusSorted(
             @RequestParam(defaultValue = "startTime") String sort,
-            @RequestParam(defaultValue = "desc") String direction
+            @RequestHeader("Authorization") String token
     ) {
-        if (!List.of("startTime", "likesCount","participantsCount").contains(sort)) {
 
-            return projectService.getProjectsByStatusRemaining();
+        Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
+        if(sort.equals("remaining")) {
+            return projectService.getProjectsByStatusRemaining(userId);
         }
-        return projectService.getProjectsByStatusSorted(sort, direction);
+        if(sort.equals("liked"))
+        {
+            return projectService.getProjectsLiked(userId);
+        }
+        return projectService.getProjectsByStatusSorted(sort,userId);
+    }
 
-}}
+}
