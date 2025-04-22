@@ -7,6 +7,7 @@ import com.pbl.pbl_be.repository.ProjectLikeRepository;
 import com.pbl.pbl_be.repository.ProjectRepository;
 import com.pbl.pbl_be.repository.ProjectRequestRepository;
 import com.pbl.pbl_be.repository.UserRepository;
+import com.pbl.pbl_be.security.JwtTokenHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 @Component
@@ -22,7 +23,10 @@ public class ProjectMapper {
     private ProjectRequestRepository projectRequestRepository;
 
     @Autowired
-    private ProjectLikeRepository projectLikeRepository; // Fix: Add @Autowired here
+    private ProjectLikeRepository projectLikeRepository;
+
+    @Autowired
+    private JwtTokenHelper jwtTokenHelper;
 
     public Project toEntity(ProjectDTO dto) {
         Project project = new Project();
@@ -82,6 +86,9 @@ public class ProjectMapper {
         if (project.getStatus() != null) {
             dto.setStatus(project.getStatus().name());
         }
+
+//        Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
+//        dto.setIsLiked(projectLikeRepository.existsByProject_ProjectIdAndUser_Id(project.getProjectId(),userId));
 
         return dto;
     }
