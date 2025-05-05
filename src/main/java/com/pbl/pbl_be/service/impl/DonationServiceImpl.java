@@ -1,6 +1,7 @@
 package com.pbl.pbl_be.service.impl;
 
 import com.pbl.pbl_be.dto.DonationDTO;
+import com.pbl.pbl_be.dto.DonationStatsDTO;
 import com.pbl.pbl_be.model.Donation;
 import com.pbl.pbl_be.repository.DonationRepository;
 import com.pbl.pbl_be.service.DonationService;
@@ -28,5 +29,10 @@ public class DonationServiceImpl implements DonationService {
                 .stream()
                 .map(DonationDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DonationStatsDTO> donationsByProjectAndDate() {
+        return donationRepository.sumDonationsByProjectAndDate();
     }
 }

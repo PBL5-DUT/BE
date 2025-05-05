@@ -8,8 +8,8 @@ public interface ProjectService {
 
     List<ProjectDTO> getAllProjects();
     ProjectDTO getProjectById(Integer projectId);
-    List<ProjectDTO> getProjectsByPmId(Integer userId);// dự án của user làm pm
-    List<ProjectDTO> getProjectsByStatus(String status); // dự án của user làm pm
+    List<ProjectDTO> getProjectsByPmId(Integer pmId);
+    List<ProjectDTO> getProjectsByStatus(String status);
     ProjectDTO createProject(ProjectDTO projectDto);
     ProjectDTO updateProject(Integer projectId, ProjectDTO project);
     void deleteProject(Integer projectId);

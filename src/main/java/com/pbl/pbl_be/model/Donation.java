@@ -42,9 +42,6 @@ public class Donation {
     @Column(name = "status")
     private Status status; // PENDING, SUCCESS, FAILED
 
-//    @Column(name = "user_id", insertable = false, updatable = false)
-//    private Integer userId;
-
     public enum Status {
         pending, success,failed
 
@@ -55,7 +52,5 @@ public class Donation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
-
 }
 

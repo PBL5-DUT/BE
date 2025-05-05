@@ -55,10 +55,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectDTO> getProjectsByPmId(Integer userId) {
-        User user= this.userRepo.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
-        List<Project> projects = projectRepo.findProjectsByPm(user);
+    public List<ProjectDTO> getProjectsByPmId(Integer pmId) {
+        Project project = this.projectRepo.findById(pmId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project", "pmId", pmId));
+        List<Project> projects = projectRepo.findProjectsByPm(project);
         return projects.stream()
                 .map(projectMapper::toDTO)
                 .collect(Collectors.toList());
