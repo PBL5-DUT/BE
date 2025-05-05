@@ -7,6 +7,7 @@ import com.pbl.pbl_be.repository.ProjectLikeRepository;
 import com.pbl.pbl_be.repository.ProjectRepository;
 import com.pbl.pbl_be.repository.UserRepository;
 import com.pbl.pbl_be.service.ProjectLikeService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +43,7 @@ public class ProjectLikeServiceImpl implements ProjectLikeService {
 
         projectLikeRepository.save(like);
     }
-
+    @Transactional
     @Override
     public void deleteProjectLike(Integer projectId, Integer userId) {
         if (projectLikeRepository.existsByProject_ProjectIdAndUser_Id(projectId, userId)) {
