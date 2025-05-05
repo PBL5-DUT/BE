@@ -2,6 +2,7 @@ package com.pbl.pbl_be.mapper;
 
 import com.pbl.pbl_be.dto.ProjectDTO;
 import com.pbl.pbl_be.model.Project;
+import com.pbl.pbl_be.model.ProjectRequest;
 import com.pbl.pbl_be.model.User;
 import com.pbl.pbl_be.repository.ProjectLikeRepository;
 import com.pbl.pbl_be.repository.ProjectRepository;
@@ -59,7 +60,7 @@ public class ProjectMapper {
         return project;
     }
 
-    public ProjectDTO toDTO(Project project) {
+    public ProjectDTO toDTO(Project project, int userId) {
         ProjectDTO dto = new ProjectDTO();
 
         dto.setProjectId(project.getProjectId());
@@ -81,15 +82,18 @@ public class ProjectMapper {
         dto.setMaxParticipants(project.getMaxParticipants());
 
         dto.setParticipantsCount(projectRequestRepository.countApprovedParticipantsByProject(project));
-        dto.setLikesCount(projectLikeRepository.countLikesByApprovedProject(project, Project.Status.approved)); // Ensure this is not null
+        dto.setLikesCount(projectLikeRepository.countLikesByApprovedProject(project, Project.Status.approved));
 
         if (project.getStatus() != null) {
             dto.setStatus(project.getStatus().name());
         }
 
-//        Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
-//        dto.setIsLiked(projectLikeRepository.existsByProject_ProjectIdAndUser_Id(project.getProjectId(),userId));
+        // Kiểm tra isLiked
+        dto.setIsLiked(projectLikeRepository.existsByProject_ProjectIdAndUser_Id(project.getProjectId(), userId));
 
+        // Kiểm tra hasJoined
+        dto.setHasJoined(projectRequestRepository.existsByProject_ProjectIdAndUser_IdAndStatus(
+                project.getProjectId(), userId, ProjectRequest.Status.approved));
         return dto;
     }
 }
