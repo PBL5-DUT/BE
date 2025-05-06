@@ -41,10 +41,10 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectRequestRepository projectRequestRepo;
 
     @Override
-    public List<ProjectDTO> getAllProjects(Integer userId) {
+    public List<ProjectDTO> getAllProjects() {
         List<Project> projects = projectRepo.findAll();
         return projects.stream()
-                .map(project -> projectMapper.toDTO(project, userId))
+                .map(project -> projectMapper.toDTO(project))
                 .collect(Collectors.toList());
     }
 
@@ -58,35 +58,34 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
 
     public List<ProjectDTO> getProjectsByPmId(Integer pmId) {
-        Project project = this.projectRepo.findById(pmId)
-                .orElseThrow(() -> new ResourceNotFoundException("Project", "pmId", pmId));
-        List<Project> projects = projectRepo.findProjectsByPm(project);
+        List<Project> projects = projectRepo.findProjectsByPmId(pmId);
         return projects.stream()
-                .map(project -> projectMapper.toDTO(project, userId))
+                .map(project -> projectMapper.toDTO(project))
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<ProjectDTO> getProjectsByStatus(String status, Integer userId) {
-        Project.Status projectStatus = Project.Status.valueOf(status);
-        List<Project> projects = projectRepo.findProjectsByStatus(projectStatus);
-        return projects.stream()
-                .map(project -> projectMapper.toDTO(project,userId ))
-                .collect(Collectors.toList());
-    }
+
+//    @Override
+//    public List<ProjectDTO> getProjectsByStatus(String status, Integer userId) {
+//        Project.Status projectStatus = Project.Status.valueOf(status);
+//        List<Project> projects = projectRepo.findProjectsByStatus(projectStatus);
+//        return projects.stream()
+//                .map(project -> projectMapper.toDTO(project,userId ))
+//                .collect(Collectors.toList());
+//    }
 
     @Override
-    public ProjectDTO createProject(ProjectDTO projectDto, Integer userId) {
+    public ProjectDTO createProject(ProjectDTO projectDto) {
         Project project = projectMapper.toEntity(projectDto);
         project.setCreatedAt(LocalDateTime.now());
         project.setUpdatedAt(LocalDateTime.now());
         project.setStatus(Project.Status.pending);
         Project savedProject = this.projectRepo.save(project);
-        return projectMapper.toDTO(savedProject, userId);
+        return projectMapper.toDTO(savedProject);
     }
 
     @Override
-    public ProjectDTO updateProject(Integer projectId, ProjectDTO projectDto, Integer userId) {
+    public ProjectDTO updateProject(Integer projectId, ProjectDTO projectDto) {
         Project project = this.projectRepo.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project", "projectId", projectId));
 
@@ -98,7 +97,7 @@ public class ProjectServiceImpl implements ProjectService {
         project.setUpdatedAt(LocalDateTime.now());
 
         Project updatedProject = this.projectRepo.save(project);
-        return projectMapper.toDTO(updatedProject, userId);
+        return projectMapper.toDTO(updatedProject);
     }
 
     @Override
