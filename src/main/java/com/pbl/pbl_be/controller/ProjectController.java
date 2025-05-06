@@ -36,7 +36,7 @@ public class ProjectController {
     @GetMapping("/")
     public List<ProjectDTO> getAllProjects(@RequestHeader("Authorization") String token) {
         Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
-        return projectService.getAllProjects(userId);
+        return projectService.getAllProjects();
     }
 
     @GetMapping("/{projectId}")
@@ -59,7 +59,7 @@ public class ProjectController {
             @RequestHeader("Authorization") String token
     ) {
         Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
-        ProjectDTO createdProject = this.projectService.createProject(projectDto, userId);
+        ProjectDTO createdProject = this.projectService.createProject(projectDto);
         return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
 
@@ -70,7 +70,7 @@ public class ProjectController {
             @RequestHeader("Authorization") String token
     ) {
         Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
-        ProjectDTO updatedProject = this.projectService.updateProject(projectId, project, userId);
+        ProjectDTO updatedProject = this.projectService.updateProject(projectId, project);
         return ResponseEntity.ok(updatedProject);
     }
 
