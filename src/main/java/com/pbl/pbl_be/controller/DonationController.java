@@ -1,6 +1,7 @@
 package com.pbl.pbl_be.controller;
 
 import com.pbl.pbl_be.dto.DonationDTO;
+import com.pbl.pbl_be.dto.DonationStatsDTO;
 import com.pbl.pbl_be.model.Donation;
 import com.pbl.pbl_be.repository.DonationRepository;
 import com.pbl.pbl_be.service.DonationService;
@@ -29,5 +30,10 @@ public class DonationController {
     @GetMapping
     public ResponseEntity<List<DonationDTO>> getDonations() {
         return ResponseEntity.ok(donationService.getAllDonations());
+    }
+
+    @PostMapping
+    public Donation createDonation(@RequestBody Donation donation) {
+        return donationService.saveDonation(donation);
     }
 }

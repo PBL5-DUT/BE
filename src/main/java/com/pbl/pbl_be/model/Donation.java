@@ -38,24 +38,12 @@ public class Donation {
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private Type type;
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "status")
-//    private Status status; // PENDING, SUCCESS, FAILED
 
-//    @Column(name = "user_id", insertable = false, updatable = false)
-//    private Integer userId;
-
-//    public enum Status {
-//        pending, success,failed
-//
-//    }
-    public enum Type{
+  public enum Type{
         money, goods
     }
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
-
 }
 
