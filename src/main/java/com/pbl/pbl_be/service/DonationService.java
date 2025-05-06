@@ -11,4 +11,6 @@ public interface DonationService {
     List<DonationDTO> getAllDonations();
 
     List<DonationStatsDTO> donationsByProjectAndDate();
+    Donation saveDonation(Donation donation);
+
 }

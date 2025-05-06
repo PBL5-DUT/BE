@@ -32,4 +32,8 @@ public class DonationController {
         return ResponseEntity.ok(donationService.getAllDonations());
     }
 
+    @PostMapping
+    public Donation createDonation(@RequestBody Donation donation) {
+        return donationService.saveDonation(donation);
+    }
 }

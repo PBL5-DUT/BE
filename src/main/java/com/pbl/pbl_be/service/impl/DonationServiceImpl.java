@@ -8,6 +8,7 @@ import com.pbl.pbl_be.service.DonationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,5 +35,11 @@ public class DonationServiceImpl implements DonationService {
     @Override
     public List<DonationStatsDTO> donationsByProjectAndDate() {
         return donationRepository.sumDonationsByProjectAndDate();
+    }
+
+    @Override
+    public Donation saveDonation(Donation donation) {
+        donation.setCreatedAt(LocalDateTime.now());
+        return donationRepository.save(donation);
     }
 }
