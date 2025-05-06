@@ -19,12 +19,12 @@ public class Donation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     @Column(name = "donation_id")
     private Integer donationId;
 
 
     @Column(name = "amount")
-
     private Long amount;
 
     @Column(name = "created_at")
@@ -35,12 +35,27 @@ public class Donation {
 
     @Column(name = "txn_ref")
     private String txnRef;
-
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private Type type;
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status; // PENDING, SUCCESS, FAILED
+    private Status status; // PENDING, SUCCESS, FAILED
 
-    @Column(name = "user_id")
-    private Integer userId;
+//    @Column(name = "user_id", insertable = false, updatable = false)
+//    private Integer userId;
+
+    public enum Status {
+        pending, success,failed
+
+    }
+    public enum Type{
+        money, goods
+    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
 
 }
 

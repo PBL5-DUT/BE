@@ -86,7 +86,7 @@ protected void doFilterInternal(HttpServletRequest request, HttpServletResponse 
     String path = request.getServletPath();
 
     // Bỏ qua xử lý token cho các route không cần xác thực
-    if (path.equals("/api/payment/create") || path.equals("/api/payment/return")) {
+    if (path.equals("/api/payment/create") || path.equals("/api/payment/return") || path.equals("/payment-success")) {
         filterChain.doFilter(request, response);
         return;
     }

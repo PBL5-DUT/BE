@@ -1,5 +1,7 @@
 package com.pbl.pbl_be.service.impl;
 
+import com.pbl.pbl_be.dto.ProjectRequestDTO;
+import com.pbl.pbl_be.mapper.ProjectRequestMapper;
 import com.pbl.pbl_be.model.ProjectRequest;
 import com.pbl.pbl_be.model.Project;
 import com.pbl.pbl_be.model.User;
@@ -8,8 +10,9 @@ import com.pbl.pbl_be.repository.ProjectRepository;
 import com.pbl.pbl_be.repository.UserRepository;
 import com.pbl.pbl_be.service.ProjectRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 public class ProjectRequestServiceImpl implements ProjectRequestService {
@@ -21,7 +24,10 @@ public class ProjectRequestServiceImpl implements ProjectRequestService {
     private ProjectRepository projectRepository;
 
     @Autowired
-    private UserRepository userRepository;// Added to fetch Project by ID
+    private UserRepository userRepository;
+
+    @Autowired
+    ProjectRequestMapper projectRequestMapper;
 
     @Override
     public int getApprovedParticipantsCount(int projectId) {
@@ -33,13 +39,23 @@ public class ProjectRequestServiceImpl implements ProjectRequestService {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("Project not found with ID: " + projectId));
 
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
         ProjectRequest projectRequest = new ProjectRequest();
         projectRequest.setProject(project); // Set the project
-        projectRequest.setUser(user); // Ensure userId exists in ProjectRequest
-        projectRequest.setStatus(ProjectRequest.Status.pending); // Ensure PENDING exists in Status enum
+        projectRequest.setUser(user);
+        projectRequest.setCreatedAt(LocalDateTime.now());// Ensure userId exists in ProjectRequest
+        projectRequest.setStatus(ProjectRequest.Status.pending);
         projectRequestRepository.save(projectRequest);
+    }
+
+    @Override
+    public ProjectRequestDTO checkProjectRequest(int projectId, int userId) {
+        ProjectRequest projectRequest = projectRequestRepository.findByProject_ProjectIdAndUser_Id(projectId, userId);
+        if (projectRequest != null) {
+            return projectRequestMapper.toDTO(projectRequest);
+        } else {
+            return null;
+        }
     }
 }

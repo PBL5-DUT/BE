@@ -4,6 +4,7 @@ package com.pbl.pbl_be.service.impl;
 import com.pbl.pbl_be.config.VNPayConfig;
 import com.pbl.pbl_be.dto.PaymentRequestDTO;
 import com.pbl.pbl_be.model.Donation;
+import com.pbl.pbl_be.model.User;
 import com.pbl.pbl_be.repository.DonationRepository;
 import com.pbl.pbl_be.service.PaymentService;
 import lombok.RequiredArgsConstructor;
@@ -50,8 +51,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         for (String field : fieldNames) {
             String value = vnpParams.get(field);
-            hashData.append(field).append('=').append(URLEncoder.encode(value, StandardCharsets.US_ASCII)).append('&');
-            query.append(field).append('=').append(URLEncoder.encode(value, StandardCharsets.US_ASCII)).append('&');
+            hashData.append(field).append('=').append(URLEncoder.encode(value, StandardCharsets.UTF_8)).append('&');
+            query.append(field).append('=').append(URLEncoder.encode(value, StandardCharsets.UTF_8)).append('&');
         }
         hashData.setLength(hashData.length() - 1);
         query.setLength(query.length() - 1);
@@ -59,15 +60,17 @@ public class PaymentServiceImpl implements PaymentService {
         String secureHash = hmacSHA512(vnpayConfig.vnp_HashSecret, hashData.toString());
         query.append("&vnp_SecureHash=").append(secureHash);
 
+        User user = new User();
+        user.setUserId(dto.getUserId());
         // Lưu đơn hàng trước khi redirect
         Donation donation = Donation.builder()
                 .donationId(null) // sẽ được tự sinh
-                .projectId(1)
+                .projectId(dto.getProjectId())
                 .amount(dto.getAmount())
-                .status("PENDING")
+                .status(Donation.Status.success)
                 .txnRef(txnRef)
                 .createdAt(LocalDateTime.now())
-                .userId(1)
+                .user(user)
                 .build();
 
         donationRepository.save(donation);
@@ -85,7 +88,7 @@ public class PaymentServiceImpl implements PaymentService {
         StringBuilder hashData = new StringBuilder();
         for (String field : fieldNames) {
             String value = params.get(field);
-            hashData.append(field).append('=').append(value).append('&');
+            hashData.append(field).append('=').append(URLEncoder.encode(value, StandardCharsets.UTF_8)).append('&');
         }
         hashData.setLength(hashData.length() - 1);
 
@@ -99,12 +102,12 @@ public class PaymentServiceImpl implements PaymentService {
         if (optional.isPresent()) {
             Donation donation = optional.get();
             if ("00".equals(responseCode)) {
-                donation.setStatus("SUCCESS");
+                donation.setStatus(Donation.Status.success);
             } else {
-                donation.setStatus("FAILED");
+                donation.setStatus(Donation.Status.failed);
             }
             donationRepository.save(donation);
-            return donation.getStatus();
+            return String.valueOf(donation.getStatus());
         }
         return "Không tìm thấy giao dịch";
     }

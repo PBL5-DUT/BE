@@ -22,4 +22,6 @@ public class ProjectDTO {
     private String status;
     private Integer participantsCount;
     private Integer likesCount;
+    private Boolean isLiked;
+    private Boolean hasJoined;
 }
