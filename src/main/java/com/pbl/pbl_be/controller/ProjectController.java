@@ -1,11 +1,13 @@
 package com.pbl.pbl_be.controller;
 
+
+
+import com.pbl.pbl_be.dto.DonationStatsDTO;
 import com.pbl.pbl_be.dto.ProjectDTO;
+import com.pbl.pbl_be.repository.DonationRepository;
 import com.pbl.pbl_be.repository.ProjectRepository;
 import com.pbl.pbl_be.security.JwtTokenHelper;
 import com.pbl.pbl_be.service.ProjectService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,6 +47,11 @@ public class ProjectController {
     ) {
         Integer userId= jwtTokenHelper.getUserIdFromToken(token.substring(7));
         return ResponseEntity.ok(this.projectService.getProjectById(projectId, userId));
+    }
+
+    @GetMapping("/pm/{pmId}")
+    public ResponseEntity<ProjectDTO> getProjectsByPmId(@PathVariable Integer pmId){
+        return ResponseEntity.ok((ProjectDTO) this.projectService.getProjectsByPmId(pmId));
     }
 
     @PostMapping
