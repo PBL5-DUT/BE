@@ -40,6 +40,7 @@ public class ProjectMapper {
         project.setStartTime(dto.getStartTime());
         project.setEndTime(dto.getEndTime());
         project.setMaxParticipants(dto.getMaxParticipants());
+        project.setBank(dto.getBank());
 
         if (dto.getPmId() != null) {
             User pm = userRepository.findById(dto.getPmId())
@@ -59,6 +60,9 @@ public class ProjectMapper {
 
         return project;
     }
+    public ProjectDTO toDTO(Project project) {
+        return toDTO(project, -1);
+    }
 
     public ProjectDTO toDTO(Project project, int userId) {
         ProjectDTO dto = new ProjectDTO();
@@ -68,6 +72,7 @@ public class ProjectMapper {
         dto.setDescription(project.getDescription());
         dto.setLocation(project.getLocation());
         dto.setAvatarFilepath(project.getAvatarFilepath());
+        dto.setBank(project.getBank());
 
         if (project.getParentProject() != null) {
             dto.setParentProjectId(project.getParentProject().getProjectId());
@@ -88,12 +93,14 @@ public class ProjectMapper {
             dto.setStatus(project.getStatus().name());
         }
 
-        // Kiểm tra isLiked
-        dto.setIsLiked(projectLikeRepository.existsByProject_ProjectIdAndUser_Id(project.getProjectId(), userId));
+        if(userId>0) {
+            // Kiểm tra isLiked
+            dto.setIsLiked(projectLikeRepository.existsByProject_ProjectIdAndUser_Id(project.getProjectId(), userId));
 
-        // Kiểm tra hasJoined
-        dto.setHasJoined(projectRequestRepository.existsByProject_ProjectIdAndUser_IdAndStatus(
-                project.getProjectId(), userId, ProjectRequest.Status.approved));
+            // Kiểm tra hasJoined
+            dto.setHasJoined(projectRequestRepository.existsByProject_ProjectIdAndUser_IdAndStatus(
+                    project.getProjectId(), userId, ProjectRequest.Status.approved));
+        }
         return dto;
     }
 }

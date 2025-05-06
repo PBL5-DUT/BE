@@ -67,7 +67,6 @@ public class PaymentServiceImpl implements PaymentService {
                 .donationId(null) // sẽ được tự sinh
                 .projectId(dto.getProjectId())
                 .amount(dto.getAmount())
-                .status(Donation.Status.success)
                 .txnRef(txnRef)
                 .createdAt(LocalDateTime.now())
                 .user(user)
@@ -101,13 +100,8 @@ public class PaymentServiceImpl implements PaymentService {
         Optional<Donation> optional = donationRepository.findByTxnRef(txnRef);
         if (optional.isPresent()) {
             Donation donation = optional.get();
-            if ("00".equals(responseCode)) {
-                donation.setStatus(Donation.Status.success);
-            } else {
-                donation.setStatus(Donation.Status.failed);
-            }
             donationRepository.save(donation);
-            return String.valueOf(donation.getStatus());
+            return "success";
         }
         return "Không tìm thấy giao dịch";
     }

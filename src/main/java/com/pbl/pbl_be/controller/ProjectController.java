@@ -4,8 +4,6 @@ import com.pbl.pbl_be.dto.ProjectDTO;
 import com.pbl.pbl_be.repository.ProjectRepository;
 import com.pbl.pbl_be.security.JwtTokenHelper;
 import com.pbl.pbl_be.service.ProjectService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.function.Function;
 
 @RestController
 @RequestMapping("/api/projects")
