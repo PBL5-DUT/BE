@@ -20,6 +20,7 @@ public class ProjectDTO {
     private LocalDate endTime;
     private Integer maxParticipants;
     private String status;
+    private String bank;
     private Integer participantsCount;
     private Integer likesCount;
     private Boolean isLiked;

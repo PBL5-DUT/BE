@@ -32,6 +32,9 @@ public class Project {
     @Column(name = "avatar_filepath")
     private String avatarFilepath;
 
+    @Column(name = "bank")
+    private String bank;
+
     @ManyToOne
     @JoinColumn(name = "parent_project_id")
     private Project parentProject;
