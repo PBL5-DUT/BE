@@ -1,7 +1,5 @@
 package com.pbl.pbl_be.model;
 
-
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,6 +33,10 @@ public class Donation {
 
     @Column(name = "txn_ref")
     private String txnRef;
+
+    @Column(name = "good_description")
+    private String goodDescription;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private Type type;
