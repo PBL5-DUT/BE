@@ -19,6 +19,5 @@ public class ExpenseController {
         public List<Expense> getExpensesByProjectId(@PathVariable Integer projectId) {
             return expenseService.getExpensesByProjectId(projectId);
         }
-
     }
 
