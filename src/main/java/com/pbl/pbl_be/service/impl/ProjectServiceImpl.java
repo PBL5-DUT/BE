@@ -56,7 +56,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-
     public List<ProjectDTO> getProjectsByPmId(Integer pmId) {
         List<Project> projects = projectRepo.findProjectsByPmId(pmId);
         return projects.stream()
@@ -65,14 +64,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
 
-//    @Override
-//    public List<ProjectDTO> getProjectsByStatus(String status, Integer userId) {
-//        Project.Status projectStatus = Project.Status.valueOf(status);
-//        List<Project> projects = projectRepo.findProjectsByStatus(projectStatus);
-//        return projects.stream()
-//                .map(project -> projectMapper.toDTO(project,userId ))
-//                .collect(Collectors.toList());
-//    }
 
     @Override
     public ProjectDTO createProject(ProjectDTO projectDto) {
@@ -190,4 +181,28 @@ public class ProjectServiceImpl implements ProjectService {
                 .orElseThrow(() -> new ResourceNotFoundException("Project", "projectId", projectId));
         this.projectRepo.delete(project);
     }
+
+    @Override
+    public ProjectDTO lockProject(Integer projectId, ProjectDTO projectDto) {
+        Project project = this.projectRepo.findById(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project", "projectId", projectId));
+
+        project.setStatus(Project.Status.valueOf(projectDto.getStatus()));
+        project.setUpdatedAt(LocalDateTime.now());
+
+        Project updatedProject = this.projectRepo.save(project);
+        return projectMapper.toDTO(updatedProject);
+    }
+
+    @Override
+    public ProjectDTO copyProject(Project projectId, ProjectDTO projectDto) {
+        Project project = projectMapper.toEntity(projectDto);
+        project.setParentProject(projectId);
+        project.setCreatedAt(LocalDateTime.now());
+        project.setUpdatedAt(LocalDateTime.now());
+        project.setStatus(Project.Status.draft);
+        Project savedProject = this.projectRepo.save(project);
+        return projectMapper.toDTO(savedProject);
+    }
+
 }
