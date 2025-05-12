@@ -6,6 +6,6 @@ import com.pbl.pbl_be.model.Post;
 import java.util.List;
 
 public interface PostService {
-    List<Post> getPostsByForumIdAndStatus(Integer forumId, String status);
-    void createPost(PostDTO postDto, Integer userId);
+    List<PostDTO> getPostsByForumIdAndStatus(Integer forumId, String status);
+    void createPost(PostDTO postDto);
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @Entity
 @Table(name = "posts")
@@ -34,6 +35,7 @@ public class Post {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
 
     public enum Status {
         pending, approved, rejected
