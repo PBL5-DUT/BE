@@ -10,6 +10,7 @@ public class DonationDTO {
     private Integer userId;
     private Long amount;
     private String txnRef;
+    private String goodDescription;
     private LocalDateTime createdAt;
     private String userName;
 
@@ -20,6 +21,7 @@ public class DonationDTO {
         this.userName = donation.getUser().getUsername();
         this.createdAt = donation.getCreatedAt();
         this.txnRef = donation.getTxnRef();
+        this.goodDescription = donation.getGoodDescription();
         this.amount = donation.getAmount();
     }
 }
