@@ -44,7 +44,12 @@ public class ForumServiceImpl implements ForumService {
 
     @Override
     public ForumDTO getForumByForumId(int forumId) {
-        return new ForumDTO(this.forumRepository.findById(forumId).get());
+        Forum forum= this.forumRepository.findByForumId(forumId);
+        if (forum == null) {
+            return null;
+        }
+        return forumMapper.toDTO(forum);
+
     }
 
     @Override

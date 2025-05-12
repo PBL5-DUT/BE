@@ -17,8 +17,10 @@ public class ForumController {
     public ResponseEntity<ForumDTO> getForumByForumId(
             @PathVariable Integer forumId,
             @RequestHeader("Authorization") String token){
-return ResponseEntity.ok(this.forumService.getForumByForumId(forumId));
+        System.out.println("Token: " + token);
+        return ResponseEntity.ok(this.forumService.getForumByForumId(forumId));
     }
+
 
     @GetMapping("/project/{projectId}")
     public ResponseEntity<?> getForumsByProjectId(
