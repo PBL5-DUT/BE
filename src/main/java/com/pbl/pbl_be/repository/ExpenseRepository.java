@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Integer> {
 
-    @Query("SELECT e FROM Expense e WHERE e.project.projectId = ?1")
+    @Query("SELECT e FROM Expense e WHERE e.projectId = ?1")
     List<Expense> findByProjectId(Integer projectId);
+
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 @Service
 
@@ -21,5 +22,11 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public List<Expense> getExpensesByProjectId(Integer projectId) {
         return expenseRepository.findByProjectId(projectId);
+    }
+
+    @Override
+    public Expense saveExpense(Expense expense) {
+        expense.setCreatedAt(LocalDateTime.now());
+        return expenseRepository.save(expense);
     }
 }

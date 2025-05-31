@@ -16,9 +16,8 @@ public class Expense {
     @Column(name = "expense_id")
     private Integer expenseId;
 
-    @ManyToOne
-    @JoinColumn(name = "project_id", nullable = false)
-    private Project project;
+    @Column(name = "project_id")
+    private Integer projectId;
 
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)

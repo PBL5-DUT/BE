@@ -1,8 +1,12 @@
 package com.pbl.pbl_be.dto;
 
 import com.pbl.pbl_be.model.Expense;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
+@Getter
+@Setter
 
 public class ExpenseDTO {
     private Integer expenseId;
@@ -15,7 +19,7 @@ public class ExpenseDTO {
 
     public ExpenseDTO(Expense expense) {
         this.expenseId = expense.getExpenseId();
-        this.projectId = expense.getProject().getProjectId();
+        this.projectId = expense.getProjectId();
         this.senderId = expense.getSender().getUserId();
         this.receiverId = expense.getReceiver() != null ? expense.getReceiver().getUserId() : null;
         this.amount = expense.getAmount();

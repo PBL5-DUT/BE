@@ -19,5 +19,9 @@ public class ExpenseController {
         public List<Expense> getExpensesByProjectId(@PathVariable Integer projectId) {
             return expenseService.getExpensesByProjectId(projectId);
         }
+        @PostMapping("/add")
+        public Expense createExpense(@RequestBody Expense expense) {
+            return expenseService.saveExpense(expense);
+        }
     }
 
