@@ -85,6 +85,9 @@ public class ProjectServiceImpl implements ProjectService {
         project.setStartTime(projectDto.getStartTime());
         project.setEndTime(projectDto.getEndTime());
         project.setStatus(Project.Status.valueOf(projectDto.getStatus()));
+        project.setMaxParticipants(projectDto.getMaxParticipants());
+        project.setBank(projectDto.getBank());
+        project.setAvatarFilepath(projectDto.getAvatarFilepath());
         project.setUpdatedAt(LocalDateTime.now());
 
         Project updatedProject = this.projectRepo.save(project);
