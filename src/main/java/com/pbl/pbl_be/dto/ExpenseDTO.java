@@ -17,10 +17,12 @@ public class ExpenseDTO {
     private String purpose;
     private LocalDateTime createdAt;
 
+    public ExpenseDTO() {
+    }
     public ExpenseDTO(Expense expense) {
         this.expenseId = expense.getExpenseId();
         this.projectId = expense.getProjectId();
-        this.senderId = expense.getSender().getUserId();
+        this.senderId = expense.getSenderId();
         this.receiverId = expense.getReceiver() != null ? expense.getReceiver().getUserId() : null;
         this.amount = expense.getAmount();
         this.purpose = expense.getPurpose();

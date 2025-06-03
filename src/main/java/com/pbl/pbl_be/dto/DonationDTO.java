@@ -14,6 +14,9 @@ public class DonationDTO {
     private LocalDateTime createdAt;
     private String userName;
 
+    public void ExpenseDTO() {
+    }
+
     public DonationDTO(Donation donation) {
         this.userId = donation.getUser().getUserId();
         this.donationId = donation.getDonationId();

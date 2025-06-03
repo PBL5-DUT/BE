@@ -19,9 +19,6 @@ public class DonationController {
     @Autowired
     private DonationService donationService;
 
-    @Autowired
-    private DonationRepository donationRepository;
-
     @GetMapping("/project/{projectId}")
     public List<Donation> getDonationsByProject(@PathVariable Integer projectId) {
         return donationService.getDonationsByProjectId(projectId);
