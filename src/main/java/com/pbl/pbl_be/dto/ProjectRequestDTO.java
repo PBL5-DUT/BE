@@ -11,6 +11,8 @@ public class ProjectRequestDTO {
     private Integer requestId;
     private Integer projectId;
     private Integer userId;
+    private String UserName;
+    private String UserAvatar;
     private String status;
     private LocalDateTime createdAt;
 

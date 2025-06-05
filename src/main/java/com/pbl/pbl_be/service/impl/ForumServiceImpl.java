@@ -42,15 +42,14 @@ public class ForumServiceImpl implements ForumService {
         this.forumRepository.delete(this.forumRepository.findById(forumId).get());
     }
 
-    @Override
-    public ForumDTO getForumByForumId(int forumId) {
-        Forum forum= this.forumRepository.findByForumId(forumId);
-        if (forum == null) {
-            return null;
-        }
-        return forumMapper.toDTO(forum);
-
+@Override
+public ForumDTO getForumByForumId(int forumId) {
+    Forum forum = this.forumRepository.findByForumId(forumId);
+    if (forum == null) {
+        return null;
     }
+    return forumMapper.toDTO(forum);
+}
 
     @Override
     public List<ForumDTO> getForumsByProjectId(int projectId) {

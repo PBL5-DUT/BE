@@ -1,6 +1,7 @@
 package com.pbl.pbl_be.service.impl;
 
 import com.pbl.pbl_be.dto.ProjectRequestDTO;
+import com.pbl.pbl_be.dto.UserDTO;
 import com.pbl.pbl_be.mapper.ProjectRequestMapper;
 import com.pbl.pbl_be.model.ProjectRequest;
 import com.pbl.pbl_be.model.Project;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ProjectRequestServiceImpl implements ProjectRequestService {
@@ -57,5 +59,20 @@ public class ProjectRequestServiceImpl implements ProjectRequestService {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public List<UserDTO> getProjectMember(Integer projectId, Integer userId) {
+        List<User> users = projectRequestRepository.findUsersByProjectIdAndStatus(projectId, ProjectRequest.Status.approved);
+        return users.stream()
+                .map(user -> {
+                    UserDTO userDTO = new UserDTO();
+                    userDTO.setUserId(user.getUserId());
+                    userDTO.setUsername(user.getUsername());
+                    userDTO.setFullName(user.getFullName());
+                    userDTO.setAvatarFilepath(user.getAvatarFilepath());
+                    return userDTO;
+                })
+                .toList();
     }
 }

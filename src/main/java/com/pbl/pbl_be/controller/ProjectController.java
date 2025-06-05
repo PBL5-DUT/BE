@@ -4,6 +4,8 @@ package com.pbl.pbl_be.controller;
 
 import com.pbl.pbl_be.dto.DonationStatsDTO;
 import com.pbl.pbl_be.dto.ProjectDTO;
+import com.pbl.pbl_be.dto.UserDTO;
+import com.pbl.pbl_be.model.User;
 import com.pbl.pbl_be.repository.DonationRepository;
 import com.pbl.pbl_be.repository.ProjectRepository;
 import com.pbl.pbl_be.security.JwtTokenHelper;
@@ -100,5 +102,13 @@ public class ProjectController {
     ) {
         Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
         return projectService.getJoinedProjects(userId);
+    }
+    @GetMapping("/child-projects/{parentProjectId}")
+    public List<ProjectDTO> getChildProjectsByParentId(
+            @PathVariable Integer parentProjectId,
+            @RequestHeader("Authorization") String token
+    ) {
+        Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
+        return projectService.getChildProjectsByParentId(parentProjectId, userId);
     }
 }

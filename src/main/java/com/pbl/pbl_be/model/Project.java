@@ -62,7 +62,7 @@ public class Project {
     private LocalDateTime updatedAt;
 
     public enum Status {
-        pending, approved, rejected, locked, finished, draft
+        pending, approved, rejected, locked, finished, draft, lockedpending
 
     }
 }
