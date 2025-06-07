@@ -87,7 +87,7 @@ public class ProjectMapper {
         dto.setMaxParticipants(project.getMaxParticipants());
 
         dto.setParticipantsCount(projectRequestRepository.countApprovedParticipantsByProject(project));
-        dto.setLikesCount(projectLikeRepository.countLikesByApprovedProject(project, Project.Status.approved));
+        dto.setLikesCount(projectLikeRepository.countProjectLikeByProject(project));
 
         if (project.getStatus() != null) {
             dto.setStatus(project.getStatus().name());

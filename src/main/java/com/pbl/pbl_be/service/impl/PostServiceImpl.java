@@ -36,14 +36,12 @@ public class PostServiceImpl implements PostService {
 
 
  @Override
- public List<PostDTO> getPostsByForumIdAndStatus(Integer forumId, Post.Status status) {
-
+ public List<PostDTO> getPostsByForumIdAndStatus(Integer forumId, Post.Status status, Integer userId) {
 
      List<Post> posts = postRepository.findByForum_ForumIdAndStatus(forumId, status);
-     System.out.println("Dung");
 
      return posts.stream()
-             .map(post -> postMapper.toDTO(post, 0)) // Assuming 0 is the userId for the current user
+             .map(post -> postMapper.toDTO(post, userId)) // Assuming 0 is the userId for the current user
              .collect(Collectors.toList());
  }
 
