@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/likes")
+@RequestMapping("/api/projectlikes")
 public class ProjectLikeController {
     @Autowired
     private JwtTokenHelper jwtTokenHelper;
@@ -16,18 +16,11 @@ public class ProjectLikeController {
     @Autowired
     private ProjectLikeService projectLikeService;
 
-     @PostMapping("/{projectId}/like")
+     @PostMapping("/{projectId}")
      public ResponseEntity<Void> likeProject(@PathVariable Integer projectId, @RequestHeader("Authorization") String token) {
          Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
          this.projectLikeService.createProjectLike(projectId, userId);
          return ResponseEntity.noContent().build();
      }
-    @PostMapping("/{projectId}/unlike")
-    public ResponseEntity<Void> unlikeProject(@PathVariable Integer projectId, @RequestHeader("Authorization") String token) {
-        Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
-        this.projectLikeService.deleteProjectLike(projectId, userId);
-        return ResponseEntity.noContent().build();
-    }
-
 
 }

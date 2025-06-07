@@ -26,7 +26,8 @@ public class PostController {
     public List<PostDTO> getPostsByForumId(
             @PathVariable Integer forumId,
             @RequestHeader("Authorization") String token) {
-return postService.getPostsByForumIdAndStatus(forumId, Post.Status.approved);
+        int userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
+return postService.getPostsByForumIdAndStatus(forumId, Post.Status.approved, userId);
     }
 
     @PostMapping()

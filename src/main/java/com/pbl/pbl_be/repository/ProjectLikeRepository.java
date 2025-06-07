@@ -20,4 +20,6 @@ public interface ProjectLikeRepository extends JpaRepository<ProjectLike, Intege
     boolean existsByProject_ProjectIdAndUser_Id(Integer projectId, Integer userId);
 
     void deleteByProject_ProjectIdAndUser_Id(Integer projectId, Integer userId);
+
+    Integer countProjectLikeByProject(Project project);
 }
