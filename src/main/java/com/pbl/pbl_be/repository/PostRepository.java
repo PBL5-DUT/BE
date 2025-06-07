@@ -7,7 +7,7 @@ import java.util.List;
 
 
 public interface PostRepository extends JpaRepository<Post, Long> {
-    Post findByPostId(Integer postId);
+    Post findByPostId(int postId);
 
-    List<Post> findByForum_ForumIdAndStatus(Integer forumId, String status);
+    List<Post> findByForum_ForumIdAndStatus(int forumId, Post.Status status);
 }

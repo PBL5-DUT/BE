@@ -32,9 +32,7 @@ public class LikeMapper {
         if (likeDTO == null) {
             return null;
         }
-        Like like = new Like();
-        like.setPost(postRepository.findByPostId(likeDTO.getPostId()));
-        like.setUser(userRepository.findByUserId(likeDTO.getUserId()));
+        Like like = new Like(postRepository.findByPostId(likeDTO.getPostId()),userRepository.findByUserId(likeDTO.getUserId()));
         like.setCreatedAt(LocalDateTime.now());
         return like;
     }

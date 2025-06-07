@@ -1,6 +1,7 @@
 package com.pbl.pbl_be.service.impl;
 
 import com.pbl.pbl_be.dto.ProjectDTO;
+import com.pbl.pbl_be.dto.UserDTO;
 import com.pbl.pbl_be.exception.ResourceNotFoundException;
 import com.pbl.pbl_be.mapper.ProjectMapper;
 import com.pbl.pbl_be.model.Project;
@@ -178,6 +179,17 @@ public class ProjectServiceImpl implements ProjectService {
                 .collect(Collectors.toList());
 
         return projectDTOs;
+    }
+
+    @Override
+    public List<ProjectDTO> getChildProjectsByParentId(Integer parentProjectId, Integer userId) {
+        List<Project> childProjects = this.projectRepo.findByParentProject_ProjectIdAndStatus(parentProjectId, Project.Status.approved);
+        if (childProjects.isEmpty()) {
+            throw new ResourceNotFoundException("Child Projects", "parentProjectId", parentProjectId);
+        }
+        return childProjects.stream()
+                .map(project -> projectMapper.toDTO(project, userId))
+                .collect(Collectors.toList());
     }
 
     @Override
