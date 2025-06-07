@@ -12,6 +12,4 @@ public class CommentDTO {
     private Integer userId;
     private String content;
     private LocalDateTime createdAt;
-
-
 }

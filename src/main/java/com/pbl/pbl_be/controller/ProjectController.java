@@ -1,13 +1,16 @@
 package com.pbl.pbl_be.controller;
 
-
-
 import com.pbl.pbl_be.dto.DonationStatsDTO;
 import com.pbl.pbl_be.dto.ProjectDTO;
+
+import com.pbl.pbl_be.model.Project;
+
 import com.pbl.pbl_be.dto.UserDTO;
+
 import com.pbl.pbl_be.model.User;
 import com.pbl.pbl_be.repository.DonationRepository;
 import com.pbl.pbl_be.repository.ProjectRepository;
+import com.pbl.pbl_be.repository.UserRepository;
 import com.pbl.pbl_be.security.JwtTokenHelper;
 import com.pbl.pbl_be.service.ProjectService;
 import jakarta.validation.Valid;
@@ -31,6 +34,10 @@ public class ProjectController {
     @Autowired
     private JwtTokenHelper jwtTokenHelper;
 
+    @Autowired
+    private UserRepository userRepository;
+
+
     public ProjectController(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
     }
@@ -51,9 +58,11 @@ public class ProjectController {
     }
 
     @GetMapping("/pm/{pmId}")
-    public ResponseEntity<ProjectDTO> getProjectsByPmId(@PathVariable Integer pmId){
-        return ResponseEntity.ok((ProjectDTO) this.projectService.getProjectsByPmId(pmId));
+    public ResponseEntity<List<ProjectDTO>> getProjectsByPmId(@PathVariable Integer pmId){
+        return ResponseEntity.ok(this.projectService.getProjectsByPmId(pmId));
     }
+
+
 
     @PostMapping
     public ResponseEntity<ProjectDTO> createProject(
@@ -74,6 +83,28 @@ public class ProjectController {
         Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
         ProjectDTO updatedProject = this.projectService.updateProject(projectId, project);
         return ResponseEntity.ok(updatedProject);
+    }
+
+    @PutMapping("/{projectId}/lock")
+    public ResponseEntity<ProjectDTO> lockProject(
+            @PathVariable Integer projectId,
+            @RequestBody ProjectDTO projectDto,
+            @RequestHeader("Authorization") String token
+    ) {
+        Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
+        ProjectDTO lockedProject = projectService.lockProject(projectId, projectDto);
+        return ResponseEntity.ok(lockedProject);
+    }
+
+    @PostMapping("/{projectId}/copy")
+    public ResponseEntity<ProjectDTO> copyProject(
+            @PathVariable Project projectId,
+            @RequestBody @Valid ProjectDTO projectDto,
+            @RequestHeader("Authorization") String token
+    ) {
+        Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
+        ProjectDTO copyProject = this.projectService.copyProject(projectId, projectDto);
+        return new ResponseEntity<>(copyProject, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{projectId}")

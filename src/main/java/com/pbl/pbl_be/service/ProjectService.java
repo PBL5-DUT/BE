@@ -1,7 +1,12 @@
 package com.pbl.pbl_be.service;
 
 import com.pbl.pbl_be.dto.ProjectDTO;
+
+import com.pbl.pbl_be.model.Project;
+import com.pbl.pbl_be.model.User;
+
 import com.pbl.pbl_be.dto.UserDTO;
+
 
 import java.util.List;
 
@@ -21,6 +26,10 @@ public interface ProjectService {
     List<ProjectDTO> getProjectsLiked(Integer userId);
 
     List<ProjectDTO> getJoinedProjects(Integer userId);
+
+    ProjectDTO lockProject(Integer projectId, ProjectDTO projectDto);
+    ProjectDTO copyProject(Project projectId, ProjectDTO projectDto);
+
 
     List<ProjectDTO> getChildProjectsByParentId(Integer parentProjectId, Integer userId);
 
