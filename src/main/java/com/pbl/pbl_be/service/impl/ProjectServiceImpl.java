@@ -179,7 +179,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<ProjectDTO> getChildProjectsByParentId(Integer parentProjectId, Integer userId) {
-        List<Project> childProjects = this.projectRepo.findByParentProject_ProjectId(parentProjectId);
+        List<Project> childProjects = this.projectRepo.findByParentProject_ProjectIdAndStatus(parentProjectId, Project.Status.approved);
         if (childProjects.isEmpty()) {
             throw new ResourceNotFoundException("Child Projects", "parentProjectId", parentProjectId);
         }

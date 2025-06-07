@@ -15,6 +15,5 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> {
     Project findByProjectId(Integer projectId);
     List<Project> findProjectsByPm(Project project);
     List<Project> findProjectsByPmId(Integer pmId);
-
-    List<Project> findByParentProject_ProjectId(Integer parentProjectId);
+    List<Project> findByParentProject_ProjectIdAndStatus(Integer parentProjectId, Project.Status status);
 }
