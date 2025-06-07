@@ -193,6 +193,24 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public void likeProject(Integer projectId, Integer userId) {
+        if( this.projectLikeRepo.existsByProject_ProjectIdAndUser_Id(projectId, userId)) {
+            this.projectLikeRepo.deleteByProject_ProjectIdAndUser_Id(projectId, userId);
+        } else {
+            Project project = this.projectRepo.findById(projectId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Project", "projectId", projectId));
+            User user = this.userRepo.findById(userId)
+                    .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
+
+            ProjectLike like = new ProjectLike();
+            like.setProject(project);
+            like.setUser(user);
+
+            this.projectLikeRepo.save(like);
+        }
+    }
+
+    @Override
     public void deleteProject(Integer projectId) {
         Project project = this.projectRepo.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project", "projectId", projectId));

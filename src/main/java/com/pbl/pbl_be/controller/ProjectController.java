@@ -80,7 +80,6 @@ public class ProjectController {
             @Valid @RequestBody ProjectDTO project,
             @RequestHeader("Authorization") String token
     ) {
-        Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
         ProjectDTO updatedProject = this.projectService.updateProject(projectId, project);
         return ResponseEntity.ok(updatedProject);
     }
@@ -91,7 +90,6 @@ public class ProjectController {
             @RequestBody ProjectDTO projectDto,
             @RequestHeader("Authorization") String token
     ) {
-        Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
         ProjectDTO lockedProject = projectService.lockProject(projectId, projectDto);
         return ResponseEntity.ok(lockedProject);
     }
@@ -141,5 +139,19 @@ public class ProjectController {
     ) {
         Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
         return projectService.getChildProjectsByParentId(parentProjectId, userId);
+    }
+
+    @PostMapping("/{projectId}/like")
+    public ResponseEntity<String> likeProject(
+            @PathVariable Integer projectId,
+            @RequestHeader("Authorization") String token
+    ) {
+        Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
+        try {
+            projectService.likeProject(projectId, userId);
+            return ResponseEntity.ok("Project liked successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error liking project: " + e.getMessage());
+        }
     }
 }

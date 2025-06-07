@@ -32,4 +32,8 @@ public class Like {
         this.user = user;
         this.createdAt = LocalDateTime.now();
     }
+
+    public Like() {
+
+    }
 }
