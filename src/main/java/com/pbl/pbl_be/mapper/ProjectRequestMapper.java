@@ -47,6 +47,9 @@ public class ProjectRequestMapper {
         dto.setStatus(projectRequest.getStatus().name());
         dto.setCreatedAt(projectRequest.getCreatedAt());
 
+        dto.setUserName(projectRequest.getUser().getUsername());
+        dto.setUserAvatar(projectRequest.getUser().getAvatarFilepath());
+
         return dto;
     }
 }
