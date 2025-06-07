@@ -13,6 +13,8 @@ import com.pbl.pbl_be.repository.ProjectRequestRepository;
 import com.pbl.pbl_be.repository.UserRepository;
 import com.pbl.pbl_be.service.ProjectService;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -207,5 +209,4 @@ public class ProjectServiceImpl implements ProjectService {
         Project savedProject = this.projectRepo.save(project);
         return projectMapper.toDTO(savedProject);
     }
-
 }
