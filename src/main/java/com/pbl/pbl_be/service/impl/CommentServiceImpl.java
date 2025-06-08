@@ -11,6 +11,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,12 +38,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Cacheable(value = "comments", key = "#commentId")
     public void addComment(CommentDTO commentDTO) {
         Comment comment = commentMapper.toEntity(commentDTO);
-        if (comment != null) {
-            commentRepository.save(comment);
-        }
+        commentRepository.save(comment);
+
     }
 
 

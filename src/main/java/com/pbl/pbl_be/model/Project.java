@@ -23,7 +23,7 @@ public class Project {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "description")
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "location")

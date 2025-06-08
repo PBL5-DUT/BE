@@ -37,7 +37,12 @@ public class CommentMapper {
             return null;
         }
         Comment comment = new Comment();
-        comment.setCommentId(dto.getCommentId());
+        if( dto.getCommentId() == null) {
+            comment.setCommentId(null);
+        }
+        else {
+            comment.setCommentId(dto.getCommentId());
+        }
         comment.setPost(postRepository.findByPostId(dto.getPostId()));
         comment.setUser(userRepository.findById(dto.getUserId()).orElse(null));
         comment.setContent(dto.getContent());
@@ -47,7 +52,12 @@ public class CommentMapper {
         } else {
             comment.setParentComment(null);
         }
-        comment.setCreatedAt(dto.getCreatedAt());
+        if(dto.getCreatedAt() == null) {
+            comment.setCreatedAt(java.time.LocalDateTime.now());
+        }
+        else {
+            comment.setCreatedAt(dto.getCreatedAt());
+        }
         return comment;
     }
 
