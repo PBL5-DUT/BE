@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/forums")
 public class ForumController {
@@ -23,24 +25,24 @@ public class ForumController {
 
 
     @GetMapping("/project/{projectId}")
-    public ResponseEntity<?> getForumsByProjectId(
+    public ResponseEntity<List<ForumDTO>> getForumsByProjectId(
             @PathVariable Integer projectId,
             @RequestHeader("Authorization") String token){
         return ResponseEntity.ok(this.forumService.getForumsByProjectId(projectId));
     }
     @PostMapping
-    public ResponseEntity<?> createForum(
+    public ResponseEntity<Void> createForum(
             @RequestBody @Valid ForumDTO forumDTO,
             @RequestHeader("Authorization") String token) {
         this.forumService.createForum(forumDTO);
-        return ResponseEntity.ok("Create forum successfully");
+        return ResponseEntity.ok().build();
     }
     @PutMapping("/{forumId}")
-    public ResponseEntity<?> updateForum(
+    public ResponseEntity<Void> updateForum(
             @RequestBody @Valid ForumDTO forumDTO,
             @RequestHeader("Authorization") String token) {
         this.forumService.updateForum(forumDTO);
-        return ResponseEntity.ok("Update forum successfully");
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{forumId}")
@@ -48,7 +50,7 @@ public class ForumController {
             @PathVariable Integer forumId,
             @RequestHeader("Authorization") String token){
         this.forumService.deleteForum(forumId);
-        return ResponseEntity.ok("Delete forum successfully");
+        return ResponseEntity.ok().build();
     }
 
 

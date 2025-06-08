@@ -20,8 +20,8 @@ public class DonationController {
     private DonationService donationService;
 
     @GetMapping("/project/{projectId}")
-    public List<Donation> getDonationsByProject(@PathVariable Integer projectId) {
-        return donationService.getDonationsByProjectId(projectId);
+    public ResponseEntity<List<DonationDTO>> getDonationsByProject(@PathVariable Integer projectId) {
+        return ResponseEntity.ok( donationService.getDonationsByProjectId(projectId));
     }
 
     @GetMapping
@@ -30,7 +30,8 @@ public class DonationController {
     }
 
     @PostMapping
-    public Donation createDonation(@RequestBody Donation donation) {
-        return donationService.saveDonation(donation);
+    public ResponseEntity<Void> createDonation(@RequestBody DonationDTO donationDTO) {
+        this.donationService.saveDonation(donationDTO);
+        return ResponseEntity.ok().build();
     }
 }

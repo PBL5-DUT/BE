@@ -11,6 +11,9 @@ import com.pbl.pbl_be.service.UserService;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -55,6 +58,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @CachePut(value = "users", key = "#userDTO.userId")
     public UserDTO updateUser(UserDTO userDTO) {
         int userId = userDTO.getUserId();
         User user = this.userRepo.findById(userId)
@@ -75,6 +79,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "users", key = "#userId")
     public UserDTO getUserById(Integer userId) {
         User user = this.userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
@@ -88,6 +93,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = "users", key = "#userId")
     public void deleteUser(Integer userId) {
         User user = this.userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));

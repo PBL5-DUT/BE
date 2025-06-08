@@ -1,6 +1,7 @@
 package com.pbl.pbl_be.service.impl;
 
 import com.pbl.pbl_be.dto.DonationDTO;
+import com.pbl.pbl_be.mapper.ExpenseMapper;
 import com.pbl.pbl_be.model.Donation;
 import com.pbl.pbl_be.model.Expense;
 import com.pbl.pbl_be.dto.ExpenseDTO;
@@ -10,6 +11,7 @@ import com.pbl.pbl_be.repository.ExpenseRepository;
 import com.pbl.pbl_be.repository.UserRepository;
 import com.pbl.pbl_be.service.ExpenseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 
@@ -18,42 +20,41 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-
 public class ExpenseServiceImpl implements ExpenseService {
 
     @Autowired
     private ExpenseRepository expenseRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private ExpenseMapper expenseMapper;
 
     @Override
-    public List<Expense> getExpensesByProjectId(Integer projectId) {
-        return expenseRepository.findByProjectId(projectId);
+    public List<ExpenseDTO> getExpensesByProjectId(Integer projectId) {
+        List<Expense> expenses= expenseRepository.findByProjectId(projectId);
+        if (expenses != null && !expenses.isEmpty()) {
+            return expenses.stream()
+                    .map(expense -> expenseMapper.toDto(expense)) // Assuming 0 is the userId for the current user
+                    .collect(Collectors.toList());
+        }
+        return null;
     }
 
     @Override
     public List<ExpenseDTO> getAllExpenses() {
-        return expenseRepository.findAllWithUser()
-                .stream()
-                .map(ExpenseDTO::new)
-                .collect(Collectors.toList());
+        List<Expense> expenses=expenseRepository.findAllWithUser();
+
+        if (expenses != null && !expenses.isEmpty()) {
+            return expenses.stream()
+                    .map(expense -> expenseMapper.toDto(expense)) // Assuming 0 is the userId for the current user
+                    .collect(Collectors.toList());
+        }
+        return null;
     }
 
     @Override
-    public Expense saveExpense(ExpenseDTO dto) {
-        Expense expense = new Expense();
-        expense.setProjectId(dto.getProjectId());
-        expense.setSenderId(dto.getSenderId());
-        expense.setAmount(dto.getAmount());
-        expense.setPurpose(dto.getPurpose());
-        expense.setCreatedAt(LocalDateTime.now());
-
-        User receiver = userRepository.findById(dto.getReceiverId())
-                .orElseThrow(() -> new RuntimeException("Receiver not found with id " + dto.getReceiverId()));
-        expense.setReceiver(receiver);
-
-        return expenseRepository.save(expense);
+    public void saveExpense(ExpenseDTO dto) {
+        Expense expense = expenseMapper.toEntity(dto);
+        this.expenseRepository.save(expense);
     }
 
 

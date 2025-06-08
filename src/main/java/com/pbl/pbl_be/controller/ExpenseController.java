@@ -26,7 +26,7 @@ public class ExpenseController {
     private UserRepository userRepository;
 
     @GetMapping("/project/{projectId}")
-    public List<Expense> getExpensesByProjectId(@PathVariable Integer projectId) {
+    public List<ExpenseDTO> getExpensesByProjectId(@PathVariable Integer projectId) {
         return expenseService.getExpensesByProjectId(projectId);
     }
 
@@ -36,8 +36,8 @@ public class ExpenseController {
     }
 
     @PostMapping
-    public ResponseEntity<Expense> createExpense(@RequestBody ExpenseDTO dto) {
-        Expense expense = expenseService.saveExpense(dto);
-        return ResponseEntity.ok(expense);
+    public ResponseEntity<Void> createExpense(@RequestBody ExpenseDTO dto) {
+         this.expenseService.saveExpense(dto);
+         return ResponseEntity.ok().build();
     }
 }
