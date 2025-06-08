@@ -9,6 +9,7 @@ import com.pbl.pbl_be.repository.*;
 import com.pbl.pbl_be.service.PostService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -37,6 +38,7 @@ public class PostServiceImpl implements PostService {
 
 
  @Override
+ @Cacheable(value = "posts", key = "#forumId + '-' + #status + '-' + #userId")
  public List<PostDTO> getPostsByForumIdAndStatus(Integer forumId, Post.Status status, Integer userId) {
 
      List<Post> posts = postRepository.findByForum_ForumIdAndStatus(forumId, status);
