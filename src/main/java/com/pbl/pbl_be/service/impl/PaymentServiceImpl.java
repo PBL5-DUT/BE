@@ -62,15 +62,16 @@ public class PaymentServiceImpl implements PaymentService {
 
         User user = new User();
         user.setUserId(dto.getUserId());
-        // Lưu đơn hàng trước khi redirect
         Donation donation = Donation.builder()
                 .donationId(null) // sẽ được tự sinh
                 .projectId(dto.getProjectId())
                 .amount(dto.getAmount())
+                .type(Donation.Type.money)
                 .txnRef(txnRef)
                 .createdAt(LocalDateTime.now())
                 .user(user)
                 .build();
+        // Lưu donation vào cơ sở dữ liệu
 
         donationRepository.save(donation);
 

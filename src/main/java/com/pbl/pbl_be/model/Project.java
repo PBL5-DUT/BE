@@ -63,6 +63,5 @@ public class Project {
 
     public enum Status {
         pending, approved, rejected, locked, finished, draft, lockedpending
-
     }
 }
