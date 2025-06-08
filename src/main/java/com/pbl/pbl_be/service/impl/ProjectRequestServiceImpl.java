@@ -11,6 +11,7 @@ import com.pbl.pbl_be.repository.ProjectRepository;
 import com.pbl.pbl_be.repository.UserRepository;
 import com.pbl.pbl_be.service.ProjectRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -62,6 +63,7 @@ public class ProjectRequestServiceImpl implements ProjectRequestService {
     }
 
     @Override
+    @Cacheable(value = "projectRequests", key = "#projectId")
     public List<UserDTO> getProjectMember(Integer projectId, Integer userId) {
         List<User> users = projectRequestRepository.findUsersByProjectIdAndStatus(projectId, ProjectRequest.Status.approved);
         return users.stream()

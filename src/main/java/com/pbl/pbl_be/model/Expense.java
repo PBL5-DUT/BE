@@ -1,8 +1,10 @@
 package com.pbl.pbl_be.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
@@ -13,7 +15,7 @@ import java.time.LocalDateTime;
 @Table(name = "donation_expenses")
 @Getter
 @Setter
-public class Expense {
+public class Expense  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "expense_id")
@@ -27,8 +29,9 @@ public class Expense {
     private Integer senderId;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "receiver_id")
+
     private User receiver;
 
     private Long amount;

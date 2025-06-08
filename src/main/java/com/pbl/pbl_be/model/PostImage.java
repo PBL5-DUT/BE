@@ -19,7 +19,7 @@ public class PostImage {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-    @Column(length = 1000)
+    @Column(length = 512)
     private String imageFilepath;
 
     @Column(name = "created_at")

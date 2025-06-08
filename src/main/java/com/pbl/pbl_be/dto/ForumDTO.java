@@ -7,7 +7,8 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Getter @Setter
-public class ForumDTO {
+public class ForumDTO implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     private Integer forumId;
     private Integer projectId;
     private String title;

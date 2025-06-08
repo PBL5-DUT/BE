@@ -7,6 +7,7 @@ import com.pbl.pbl_be.mapper.PostMapper;
 import com.pbl.pbl_be.model.*;
 import com.pbl.pbl_be.repository.*;
 import com.pbl.pbl_be.service.PostService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,6 +75,7 @@ public class PostServiceImpl implements PostService {
 
     }
 
+    @Transactional
     @Override
     public void likePost(Integer postId, Integer userId) {
        if (likeRepository.existsByPost_PostIdAndUser_UserId(postId, userId)) {

@@ -9,7 +9,8 @@ import java.util.List;
 
 @Getter
 @Setter
-public class PostDTO {
+public class PostDTO implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     private Integer postId;
     private Integer forumId;
     private Integer userId;

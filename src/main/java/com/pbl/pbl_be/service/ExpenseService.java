@@ -6,7 +6,7 @@ import com.pbl.pbl_be.dto.ExpenseDTO;
 import java.util.List;
 
 public interface ExpenseService {
-    List<Expense> getExpensesByProjectId(Integer projectId);
+    List<ExpenseDTO> getExpensesByProjectId(Integer projectId);
     List<ExpenseDTO>getAllExpenses();
-    Expense saveExpense(ExpenseDTO dto);
+    void saveExpense(ExpenseDTO dto);
 }

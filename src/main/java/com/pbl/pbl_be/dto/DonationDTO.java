@@ -1,9 +1,13 @@
 package com.pbl.pbl_be.dto;
 
 import com.pbl.pbl_be.model.Donation;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 public class DonationDTO {
     private Integer donationId;
     private Integer projectId;
@@ -14,17 +18,4 @@ public class DonationDTO {
     private LocalDateTime createdAt;
     private String userName;
 
-    public void ExpenseDTO() {
-    }
-
-    public DonationDTO(Donation donation) {
-        this.userId = donation.getUser().getUserId();
-        this.donationId = donation.getDonationId();
-        this.projectId = donation.getProjectId();
-        this.userName = donation.getUser().getUsername();
-        this.createdAt = donation.getCreatedAt();
-        this.txnRef = donation.getTxnRef();
-        this.goodDescription = donation.getGoodDescription();
-        this.amount = donation.getAmount();
-    }
 }

@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class ProjectDTO {
+public class ProjectDTO implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     private Integer projectId;
     private String name;
     private String description;

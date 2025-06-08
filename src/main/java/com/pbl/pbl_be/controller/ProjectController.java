@@ -43,9 +43,8 @@ public class ProjectController {
     }
 
     @GetMapping("/")
-    public List<ProjectDTO> getAllProjects(@RequestHeader("Authorization") String token) {
-        Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
-        return projectService.getAllProjects();
+    public ResponseEntity<List<ProjectDTO>> getAllProjects(@RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(projectService.getAllProjects());
     }
 
     @GetMapping("/{projectId}")
@@ -112,46 +111,52 @@ public class ProjectController {
     }
 
     @GetMapping("/approved")
-    public List<ProjectDTO> getProjectsByStatusSorted(
+    public ResponseEntity<List<ProjectDTO>> getProjectsByStatusSorted(
             @RequestParam(defaultValue = "startTime") String sort,
             @RequestHeader("Authorization") String token
     ) {
         Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
         if (sort.equals("remaining")) {
-            return projectService.getProjectsByStatusRemaining(userId);
+            return ResponseEntity.ok(projectService.getProjectsByStatusRemaining(userId));
         }
         if (sort.equals("liked")) {
-            return projectService.getProjectsLiked(userId);
+            return ResponseEntity.ok(projectService.getProjectsLiked(userId));
         }
-        return projectService.getProjectsByStatusSorted(sort, userId);
+        return ResponseEntity.ok(projectService.getProjectsByStatusSorted(sort, userId));
     }
     @GetMapping("/joined")
-    public List<ProjectDTO> getJoinedProjects(
+    public ResponseEntity<List<ProjectDTO>> getJoinedProjects(
             @RequestHeader("Authorization") String token
     ) {
         Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
-        return projectService.getJoinedProjects(userId);
+        return ResponseEntity.ok(projectService.getJoinedProjects(userId));
     }
     @GetMapping("/child-projects/{parentProjectId}")
-    public List<ProjectDTO> getChildProjectsByParentId(
+    public ResponseEntity<List<ProjectDTO>> getChildProjectsByParentId(
             @PathVariable Integer parentProjectId,
             @RequestHeader("Authorization") String token
     ) {
         Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
-        return projectService.getChildProjectsByParentId(parentProjectId, userId);
+        return ResponseEntity.ok(projectService.getChildProjectsByParentId(parentProjectId, userId));
     }
 
     @PostMapping("/{projectId}/like")
-    public ResponseEntity<String> likeProject(
+    public ResponseEntity<Void> likeProject(
             @PathVariable Integer projectId,
             @RequestHeader("Authorization") String token
     ) {
         Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
-        try {
-            projectService.likeProject(projectId, userId);
-            return ResponseEntity.ok("Project liked successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error liking project: " + e.getMessage());
-        }
+        projectService.likeProject(projectId, userId);
+        return ResponseEntity.ok().build();
+
+    }
+    @GetMapping("/userprofile/{userId}")
+    public ResponseEntity<List<ProjectDTO>> getProjectsByUserId(
+            @PathVariable Integer userId,
+            @RequestHeader("Authorization") String token
+    ) {
+        Integer currentUserId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
+        List<ProjectDTO> projects = projectService.getProjectsByUserId(userId, currentUserId);
+        return ResponseEntity.ok(projects);
     }
 }
