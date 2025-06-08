@@ -22,10 +22,6 @@ public class DonationServiceImpl implements DonationService {
     @Autowired
     private DonationRepository donationRepository;
 
-    // You might not need UserRepository directly in the service impl
-    // if it's only used by the mapper. Remove if not needed to keep clean.
-    // @Autowired
-    // private UserRepository userRepository;
 
     @Autowired
     private DonationMapper donationMapper;
@@ -36,13 +32,9 @@ public class DonationServiceImpl implements DonationService {
 
         List<Donation> donations = donationRepository.findByProjectId(projectId);
         if (donations != null && !donations.isEmpty()) {
-            List<DonationDTO> donationDTOs = donations.stream()
+            return  donations.stream()
                     .map(donation -> donationMapper.toDto(donation)) // Assuming 0 is the userId for the current user
                     .collect(Collectors.toList());
-            for( DonationDTO donation : donationDTOs) {
-                System.out.println(donation.getDonationId() + " " + donation.getAmount() + " " + donation.getUserName());
-            }
-            return donationDTOs;
         }
         return null;
     }
