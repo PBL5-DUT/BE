@@ -51,6 +51,4 @@ public class ForumController {
         return ResponseEntity.ok("Delete forum successfully");
     }
 
-
-
 }
