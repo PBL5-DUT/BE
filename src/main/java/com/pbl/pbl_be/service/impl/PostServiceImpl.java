@@ -2,10 +2,9 @@ package com.pbl.pbl_be.service.impl;
 
 import com.pbl.pbl_be.dto.PostDTO;
 import com.pbl.pbl_be.dto.PostImageDTO;
+import com.pbl.pbl_be.dto.UserDTO;
 import com.pbl.pbl_be.mapper.PostMapper;
-import com.pbl.pbl_be.model.Like;
-import com.pbl.pbl_be.model.Post;
-import com.pbl.pbl_be.model.PostImage;
+import com.pbl.pbl_be.model.*;
 import com.pbl.pbl_be.repository.*;
 import com.pbl.pbl_be.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,14 +79,36 @@ public class PostServiceImpl implements PostService {
     @Override
     public void likePost(Integer postId, Integer userId) {
        if (likeRepository.existsByPost_PostIdAndUser_UserId(postId, userId)) {
-            // If the user already liked the post, remove the like
             likeRepository.deleteByPost_PostIdAndUser_UserId(postId, userId);
         } else {
-            // If the user has not liked the post, add a new like
-likeRepository.save(new Like(
+    likeRepository.save(new Like(
     postRepository.findById(postId.longValue()).orElseThrow(() -> new IllegalArgumentException("Post not found with ID: " + postId)),
     userRepository.findById((int) userId.longValue()).orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId))
 ));    }
 
 }
+
+@Override
+public void approvePost(Integer postId) {
+    Post post = postRepository.findByPostId(postId);
+    if (post == null) {
+        throw new RuntimeException("Post not found");
+    }
+    post.setStatus(Post.Status.approved);
+    post.setUpdatedAt(LocalDateTime.now());
+    postRepository.save(post);
+}
+
+@Override
+public void rejectPost(Integer postId) {
+    Post post = postRepository.findByPostId(postId);
+    if (post == null) {
+        throw new RuntimeException("Post not found");
+    }
+    post.setStatus(Post.Status.rejected);
+    post.setUpdatedAt(LocalDateTime.now());
+    postRepository.save(post);
+}
+
+
 }

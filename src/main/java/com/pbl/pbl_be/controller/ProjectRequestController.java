@@ -6,6 +6,7 @@ import com.pbl.pbl_be.model.ProjectRequest;
 import com.pbl.pbl_be.security.JwtTokenHelper;
 import com.pbl.pbl_be.service.ProjectRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,18 @@ public class ProjectRequestController {
         projectRequestService.createProjectRequest(projectId, userId);
     }
 
+    @PutMapping("/{projectId}/accept/{userId}")
+    public ResponseEntity<?> acceptProjectRequest(
+            @PathVariable int projectId,
+            @PathVariable int userId) {
+        try {
+            projectRequestService.acceptProjectRequest(projectId, userId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping("/{projectId}/join")
     public void joinProject(@PathVariable Integer projectId, @RequestHeader("Authorization") String token) {
         Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
@@ -35,7 +48,7 @@ public class ProjectRequestController {
     }
 
     @GetMapping("/{projectId}/check-join")
-    public ProjectRequestDTO checkjoinProject(@PathVariable Integer projectId, @RequestHeader("Authorization") String token) {
+    public ProjectRequestDTO checkJoinProject(@PathVariable Integer projectId, @RequestHeader("Authorization") String token) {
         Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
         return projectRequestService.checkProjectRequest(projectId, userId);
     }
@@ -44,5 +57,10 @@ public class ProjectRequestController {
         Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
         return projectRequestService.getProjectMember(projectId, userId);
 
+    }
+    @GetMapping("/{projectId}/pending")
+    public List<UserDTO> getPendingProjectMembers(@PathVariable Integer projectId, @RequestHeader("Authorization") String token) {
+        Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
+        return projectRequestService.getPendingProjectMembers(projectId, userId);
     }
 }

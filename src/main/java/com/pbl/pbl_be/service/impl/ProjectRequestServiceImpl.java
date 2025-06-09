@@ -75,4 +75,35 @@ public class ProjectRequestServiceImpl implements ProjectRequestService {
                 })
                 .toList();
     }
+
+    @Override
+    public List<UserDTO> getPendingProjectMembers(Integer projectId, Integer userId) {
+        List<User> users = projectRequestRepository.findUsersByProjectIdAndStatus(projectId, ProjectRequest.Status.pending);
+        return users.stream()
+                .map(user -> {
+                    UserDTO userDTO = new UserDTO();
+                    userDTO.setUserId(user.getUserId());
+                    userDTO.setUsername(user.getUsername());
+                    userDTO.setFullName(user.getFullName());
+                    userDTO.setAvatarFilepath(user.getAvatarFilepath());
+                    return userDTO;
+                })
+                .toList();
+    }
+
+    @Override
+    public void acceptProjectRequest(int projectId, int userId) {
+        ProjectRequest projectRequest = projectRequestRepository.findByProject_ProjectIdAndUser_Id(projectId, userId);
+        if (projectRequest == null) {
+            throw new IllegalArgumentException("Project request not found for project ID: " + projectId + " and user ID: " + userId);
+        }
+        if (projectRequest.getStatus() == ProjectRequest.Status.approved) {
+            throw new IllegalStateException("Project request is already approved");
+        }
+        if (projectRequest.getStatus() == ProjectRequest.Status.rejected) {
+            throw new IllegalStateException("Cannot approve a rejected project request");
+        }
+        projectRequest.setStatus(ProjectRequest.Status.approved);
+        projectRequestRepository.save(projectRequest);
+    }
 }

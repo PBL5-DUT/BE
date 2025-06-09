@@ -23,16 +23,16 @@ public class Project {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "description")
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "location")
     private String location;
 
-    @Column(name = "avatar_filepath")
+    @Column(name = "avatar_filepath", length = 1000)
     private String avatarFilepath;
 
-    @Column(name = "bank")
+    @Column(name = "bank", length = 1000)
     private String bank;
 
     @ManyToOne
@@ -63,6 +63,5 @@ public class Project {
 
     public enum Status {
         pending, approved, rejected, locked, finished, draft, lockedpending
-
     }
 }
