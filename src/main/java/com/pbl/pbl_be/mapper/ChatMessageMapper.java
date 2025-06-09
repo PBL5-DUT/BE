@@ -16,15 +16,15 @@ public class ChatMessageMapper {
     @Autowired
     private UserRepository userRepository;
 
-    public ChatMessage toEntity(ChatMessageDTO chatMessageDTO,int userId) {
+    public ChatMessage toEntity(ChatMessageDTO chatMessageDTO) {
         if (chatMessageDTO == null) {
             return null;
         }
-
+        System.out.println(chatMessageDTO.getUserId());
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setMessageId(chatMessageDTO.getMessageId());
         chatMessage.setMessage(chatMessageDTO.getMessage());
-        chatMessage.setUser(userRepository.findByUserId(userId));
+        chatMessage.setUser(userRepository.findByUserId(chatMessageDTO.getUserId()));
         chatMessage.setProject(projectRepository.findByProjectId(chatMessageDTO.getProjectId()));
         chatMessage.setCreatedAt(chatMessageDTO.getCreatedAt());
         return chatMessage;
@@ -33,6 +33,7 @@ public class ChatMessageMapper {
         if (chatMessage == null) {
             return null;
         }
+
         ChatMessageDTO chatMessageDTO = new ChatMessageDTO();
         chatMessageDTO.setMessageId(chatMessage.getMessageId());
         chatMessageDTO.setMessage(chatMessage.getMessage());

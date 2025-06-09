@@ -19,15 +19,6 @@ public class ChatMessageController {
     @Autowired
     private JwtTokenHelper jwtTokenHelper;
 
-    @PostMapping("/{projectId}")
-    public ResponseEntity<Void> sendMessage(
-            @RequestHeader("Authorization") String token,
-            @PathVariable Integer projectId,
-            @RequestBody ChatMessageDTO chatMessageDTO) {
-        int userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
-        chatMessageService.sendMessage( chatMessageDTO,userId);
-        return ResponseEntity.ok().build();
-    }
     @GetMapping("/{projectId}")
     public ResponseEntity<List<ChatMessageDTO>> getMessagesByProjectId(
             @RequestHeader("Authorization") String token,
