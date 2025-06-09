@@ -18,12 +18,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Autowired
     private ChatMessageRepository chatMessageRepository;
-    @Override
-    public void sendMessage(ChatMessageDTO chatMessageDTO, int userId) {
-        ChatMessage chatMessage = chatMessageMapper.toEntity(chatMessageDTO, userId);
-        chatMessage.setCreatedAt(java.time.LocalDateTime.now());
-        chatMessageRepository.save(chatMessage);
-    }
+
 
     @Override
     public List<ChatMessageDTO> getMessagesByProjectId(Integer projectId) {
@@ -32,4 +27,13 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 .map(chatmessage -> chatMessageMapper.toDto(chatmessage)) // Assuming 0 is the userId for the current user
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public ChatMessageDTO saveMessage(ChatMessageDTO messageDTO) {
+        ChatMessage chatMessage = chatMessageMapper.toEntity(messageDTO);
+        chatMessage.setCreatedAt(java.time.LocalDateTime.now());
+        ChatMessage mess =chatMessageRepository.save(chatMessage);
+        return chatMessageMapper.toDto(mess);
+    }
+
 }
