@@ -25,8 +25,9 @@ public class ProjectRequestController {
     }
 
     @PostMapping("/{projectId}/approve/{userId}")
-    public void approveProjectRequest(@PathVariable int projectId, @PathVariable int userId) {
-        projectRequestService.createProjectRequest(projectId, userId);
+    public ResponseEntity<Void> approveProjectRequest(@PathVariable int projectId, @PathVariable int userId) {
+        this.projectRequestService.createProjectRequest(projectId, userId);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{projectId}/accept/{userId}")
@@ -42,20 +43,21 @@ public class ProjectRequestController {
     }
 
     @PostMapping("/{projectId}/join")
-    public void joinProject(@PathVariable Integer projectId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Void> joinProject(@PathVariable Integer projectId, @RequestHeader("Authorization") String token) {
         Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
         projectRequestService.createProjectRequest(projectId, userId);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{projectId}/check-join")
-    public ProjectRequestDTO checkJoinProject(@PathVariable Integer projectId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<ProjectRequestDTO> checkjoinProject(@PathVariable Integer projectId, @RequestHeader("Authorization") String token) {
         Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
-        return projectRequestService.checkProjectRequest(projectId, userId);
+        return ResponseEntity.ok(projectRequestService.checkProjectRequest(projectId, userId));
     }
     @GetMapping("/{projectId}/approved")
-    public List<UserDTO> getProjectMember(@PathVariable Integer projectId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<List<UserDTO>> getProjectMember(@PathVariable Integer projectId, @RequestHeader("Authorization") String token) {
         Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
-        return projectRequestService.getProjectMember(projectId, userId);
+        return ResponseEntity.ok(projectRequestService.getProjectMember(projectId, userId));
 
     }
     @GetMapping("/{projectId}/pending")

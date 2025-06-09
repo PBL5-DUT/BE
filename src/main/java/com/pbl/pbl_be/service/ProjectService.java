@@ -33,4 +33,7 @@ public interface ProjectService {
 
     List<ProjectDTO> getChildProjectsByParentId(Integer parentProjectId, Integer userId);
 
+    void likeProject(Integer projectId, Integer userId);
+
+    List<ProjectDTO> getProjectsByUserId(Integer userId, Integer currentUserId);
 }

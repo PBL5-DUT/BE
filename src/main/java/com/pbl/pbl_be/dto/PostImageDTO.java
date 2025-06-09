@@ -7,7 +7,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class PostImageDTO {
+public class PostImageDTO implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     private Integer imageId;
     private Integer postId;
     private String imageFilepath;

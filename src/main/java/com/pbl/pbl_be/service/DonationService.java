@@ -7,10 +7,10 @@ import com.pbl.pbl_be.model.Donation;
 import java.util.List;
 
 public interface DonationService {
-    List<Donation> getDonationsByProjectId(Integer projectId);
+    List<DonationDTO> getDonationsByProjectId(Integer projectId);
     List<DonationDTO> getAllDonations();
 
     List<DonationStatsDTO> donationsByProjectAndDate();
-    Donation saveDonation(Donation donation);
+    void saveDonation(DonationDTO donationDTO);
 
 }

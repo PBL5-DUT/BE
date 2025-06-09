@@ -7,7 +7,9 @@ import com.pbl.pbl_be.mapper.PostMapper;
 import com.pbl.pbl_be.model.*;
 import com.pbl.pbl_be.repository.*;
 import com.pbl.pbl_be.service.PostService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -36,14 +38,13 @@ public class PostServiceImpl implements PostService {
 
 
  @Override
- public List<PostDTO> getPostsByForumIdAndStatus(Integer forumId, Post.Status status) {
-
+ @Cacheable(value = "posts", key = "#forumId + '-' + #status + '-' + #userId")
+ public List<PostDTO> getPostsByForumIdAndStatus(Integer forumId, Post.Status status, Integer userId) {
 
      List<Post> posts = postRepository.findByForum_ForumIdAndStatus(forumId, status);
-     System.out.println("Dung");
 
      return posts.stream()
-             .map(post -> postMapper.toDTO(post, 0)) // Assuming 0 is the userId for the current user
+             .map(post -> postMapper.toDTO(post, userId)) // Assuming 0 is the userId for the current user
              .collect(Collectors.toList());
  }
 
@@ -76,6 +77,7 @@ public class PostServiceImpl implements PostService {
 
     }
 
+    @Transactional
     @Override
     public void likePost(Integer postId, Integer userId) {
        if (likeRepository.existsByPost_PostIdAndUser_UserId(postId, userId)) {

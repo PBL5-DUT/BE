@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Getter @Setter
-public class ProjectRequestDTO {
+public class ProjectRequestDTO   {
     private Integer requestId;
     private Integer projectId;
     private Integer userId;

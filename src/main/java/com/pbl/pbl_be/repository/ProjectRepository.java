@@ -34,7 +34,7 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> {
                                     @Param("finishedStatus") Project.Status finishedStatus,
                                     @Param("updatedAt") java.time.LocalDateTime updatedAt);
 
-    //List<Project> findProjectsByPmId(Integer pmId);
+
     List<Project> findByParentProject_ProjectIdAndStatus(Integer parentProjectId, Project.Status status);
 
 }
