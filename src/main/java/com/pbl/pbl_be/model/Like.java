@@ -35,7 +35,4 @@ public class Like {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Like() {
-
-    }
 }
