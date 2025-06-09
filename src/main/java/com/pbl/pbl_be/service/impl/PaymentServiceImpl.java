@@ -71,7 +71,6 @@ public class PaymentServiceImpl implements PaymentService {
                 .createdAt(LocalDateTime.now())
                 .user(user)
                 .build();
-        // Lưu donation vào cơ sở dữ liệu
 
         donationRepository.save(donation);
 
