@@ -30,6 +30,7 @@ public class Project {
     private String location;
 
     @Column(name = "avatar_filepath", length=1000)
+
     private String avatarFilepath;
 
     @Column(name = "bank", length = 1000)
@@ -63,6 +64,5 @@ public class Project {
 
     public enum Status {
         pending, approved, rejected, locked, finished, draft, lockedpending
-
     }
 }

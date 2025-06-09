@@ -210,13 +210,12 @@ public class ProjectServiceImpl implements ProjectService {
     @Cacheable(value = "projects", key = "#parentProjectId + '_childs_' + #userId")
     public List<ProjectDTO> getChildProjectsByParentId(Integer parentProjectId, Integer userId) {
         List<Project> childProjects = this.projectRepo.findByParentProject_ProjectIdAndStatus(parentProjectId, Project.Status.approved);
-        if (childProjects.isEmpty()) {
-            throw new ResourceNotFoundException("Child Projects", "parentProjectId", parentProjectId);
-        }
+
         return childProjects.stream()
                 .map(project -> projectMapper.toDTO(project, userId))
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public void likeProject(Integer projectId, Integer userId) {

@@ -10,4 +10,6 @@ public interface PostService {
     void createPost(PostDTO postDto);
 
     void likePost(Integer postId, Integer userId);
+    void approvePost(Integer postId);
+    void rejectPost(Integer postId);
 }

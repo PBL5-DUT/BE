@@ -33,7 +33,7 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/webjars/**",
             "/api/payment/create",
-            "/payment-success"
+            "/payment-success",
     };
 
     @Autowired

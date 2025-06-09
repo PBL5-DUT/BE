@@ -26,7 +26,9 @@ public class Like {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    public Like() {
 
+    }
     public Like(Post post, User user) {
         this.post = post;
         this.user = user;
