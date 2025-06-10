@@ -59,7 +59,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    @Cacheable(value = "projectDetails", key = "#projectId + '-' + #userId") // Cache chi tiết dự án theo người dùng
+    @Cacheable(value = "projectDetails", key = "#projectId + '-' + #userId")
     public ProjectDTO getProjectById(Integer projectId, Integer userId) {
         Project project = projectRepo.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project", "projectId", projectId));
@@ -76,7 +76,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-
     @CacheEvict(value = {"allProjects", "projectsByPm", "projectsByStatus", "projectsRemaining", "projectsLiked", "joinedProjects", "childProjects", "userProjects", "projectDetails"}, allEntries = true)
     public ProjectDTO createProject(ProjectDTO projectDto) {
         Project project = projectMapper.toEntity(projectDto);
@@ -106,8 +105,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
 
     @CachePut(value = "projectDetails", key = "#projectId + '-' + #projectDto.pmId") // Cập nhật cache chi tiết dự án sau khi update
-    @CacheEvict(value = {"allProjects", "projectsByPm", "projectsByStatus", "projectsRemaining", "projectsLiked", "joinedProjects", "childProjects", "userProjects"}, allEntries = true)
-    // Xóa các cache danh sách có thể bị ảnh hưởng
+    @CacheEvict(value = {"allProjects", "projectsByPm", "projectsByStatus", "projectsRemaining", "projectsLiked", "joinedProjects", "childProjects", "userProjects", }, allEntries = true)
     public ProjectDTO updateProject(Integer projectId, ProjectDTO projectDto) {
         Project project = this.projectRepo.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project", "projectId", projectId));
@@ -294,7 +292,6 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
 
     @CacheEvict(value = {"allProjects", "projectsByPm", "projectsByStatus", "projectsRemaining", "projectsLiked", "joinedProjects", "childProjects", "userProjects", "projectDetails"}, allEntries = true)
-    // Xóa toàn bộ cache khi xóa dự án
     public void deleteProject(Integer projectId) {
         Project project = this.projectRepo.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project", "projectId", projectId));
@@ -302,8 +299,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    @CachePut(value = "projectDetails", key = "#projectId + '-' + #projectDto.pmId") // Cập nhật cache chi tiết dự án sau khi khóa
-    @CacheEvict(value = {"allProjects", "projectsByStatus", "projectsRemaining", "projectsLiked", "joinedProjects", "childProjects"}, allEntries = true)
+    @CachePut(value = "projectDetails", key = "#projectId + '-' + #projectDto.pmId")
+    @CacheEvict(value = {"projectsByPm", "allProjects", "projectsByStatus", "projectsRemaining", "projectsLiked", "joinedProjects", "childProjects"}, allEntries = true)
     public ProjectDTO lockProject(Integer projectId, ProjectDTO projectDto) {
         Project project = this.projectRepo.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project", "projectId", projectId));
@@ -316,7 +313,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    @CacheEvict(value = {"allProjects", "childProjects"}, allEntries = true) // Xóa các cache liên quan khi sao chép dự án
+    @CacheEvict(value = {"projectsByPm", "allProjects", "childProjects", "projectDetails"}, allEntries = true) // Xóa các cache liên quan khi sao chép dự án
     public ProjectDTO copyProject(Project projectId, ProjectDTO projectDto) {
         Project project = projectMapper.toEntity(projectDto);
         project.setParentProject(projectId);
