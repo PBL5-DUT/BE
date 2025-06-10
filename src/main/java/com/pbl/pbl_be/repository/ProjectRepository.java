@@ -38,4 +38,4 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> {
 
     List<Project> findByParentProject_ProjectIdAndStatus(Integer parentProjectId, Project.Status status);
 
-}
+    List<Project> findProjectsByStatusIn(List<Project.Status> statuses);}

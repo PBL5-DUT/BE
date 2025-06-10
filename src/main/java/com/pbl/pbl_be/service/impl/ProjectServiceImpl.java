@@ -121,7 +121,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Cacheable(value = "projects", key = "#sort + #userId")
     public List<ProjectDTO> getProjectsByStatusSorted(String sort, Integer userId) {
-        List<Project> approvedProjects = this.projectRepo.findProjectsByStatus(Project.Status.approved);
+        List<Project> approvedProjects = this.projectRepo.findProjectsByStatusIn(List.of(Project.Status.approved, Project.Status.locked, Project.Status.lockedpending));
         List<ProjectDTO> projectDTOs = approvedProjects.stream()
                 .map(project -> projectMapper.toDTO(project, userId))
                 .collect(Collectors.toList());
