@@ -23,5 +23,6 @@ public class PostDTO implements java.io.Serializable {
     private Boolean isLiked;
     private int likeCount;
     private String reason;
+    private Integer reportId;
     private List<PostImageDTO> postImages;
 }
