@@ -22,5 +22,6 @@ public class PostDTO implements java.io.Serializable {
     private LocalDateTime updatedAt;
     private Boolean isLiked;
     private int likeCount;
+    private String reason;
     private List<PostImageDTO> postImages;
 }

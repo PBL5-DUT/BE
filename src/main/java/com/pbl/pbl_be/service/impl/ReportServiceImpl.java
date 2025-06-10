@@ -71,16 +71,17 @@ public class ReportServiceImpl implements ReportService {
             forum = forums.get(0);
         }
         if (reports != null && !reports.isEmpty()) {
-            List<Post> posts = new ArrayList<>();
+            List<PostDTO> postDTOs = new ArrayList<>();
             for (Report report : reports) {
                 Post post = postRepository.findByPostId(report.getReportItemId().intValue());
                 if (post != null&& post.getForum() != null && post.getForum().getForumId() == forum.getForumId()) {
-                    posts.add(post);
+
+                    PostDTO postDTO = postMapper.toDTO(post, 0); // Assuming 0 is the userId for the current user
+                    postDTO.setReason(report.getReason());
+                    postDTOs.add(postDTO);
                 }
             }
-             return posts.stream()
-                    .map(post -> postMapper.toDTO(post, 0)) // Assuming 0 is the userId for the current user
-                    .collect(Collectors.toList());
+             return postDTOs;
 
         }
         return null;
@@ -94,16 +95,16 @@ public class ReportServiceImpl implements ReportService {
             forum = forums.get(0);
         }
         if (reports != null && !reports.isEmpty()) {
-            List<Comment> comments = new ArrayList<>();
+            List<CommentDTO> commentDTOs = new ArrayList<>();
             for (Report report : reports) {
                 Comment comment = commentRepository.findByCommentId(report.getReportItemId().intValue());
                 if (comment != null&& comment.getPost() != null && comment.getPost().getForum() != null && comment.getPost().getForum().getForumId() == forum.getForumId()) {
-                    comments.add(comment);
+                    CommentDTO commentDTO = commentMapper.toDto(comment);
+                    commentDTO.setReason(report.getReason());
+                    commentDTOs.add(commentDTO);
                 }
             }
-            return comments.stream()
-                    .map(comment -> commentMapper.toDto(comment)) // Assuming 0 is the userId for the current user
-                    .collect(Collectors.toList());
+            return commentDTOs;
 
         }
         return null;
