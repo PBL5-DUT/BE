@@ -15,6 +15,7 @@ public class CommentDTO implements java.io.Serializable {
     private String avatarFilePath;
     private Integer postId;
     private String content;
+    private String reason;
     private Integer parentCommentId;
     private LocalDateTime createdAt;
 }
