@@ -14,6 +14,7 @@ public class DonationDTO  {
     private Integer projectId;
     private Integer userId;
     private Long amount;
+    private Donation.Type type;
     private String txnRef;
     private Donation.Type type;
     private String goodDescription;

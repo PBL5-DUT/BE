@@ -6,6 +6,7 @@ import com.pbl.pbl_be.repository.ReportRepository;
 import com.pbl.pbl_be.repository.UserRepository;
 import com.pbl.pbl_be.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict; // Added this import
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,11 +22,8 @@ public class ReportServiceImpl implements ReportService {
     private ReportRepository reportRepository;
 
     @Override
+    @CacheEvict(value = "reports", allEntries = true) // Invalidate all report caches when a new report is added
     public void addReport(ReportDTO reportDTO, int userId) {
-        System.out.println(reportDTO.getReportType());
-        System.out.println(reportDTO.getReportItemId());
-        System.out.println(reportDTO.getUserId());
-        System.out.println(reportDTO.getReason());
         Report report = new Report();
         report.setReportItemId(Long.valueOf(reportDTO.getReportItemId()));
         report.setReportType(Report.ReportType.valueOf(reportDTO.getReportType()));
@@ -38,6 +36,7 @@ public class ReportServiceImpl implements ReportService {
         }
         this.reportRepository.save(report);
     }
+
 
     public List<ReportDTO> getPendingReports(Report.ReportType type) {
         List<Report> reports;
@@ -63,3 +62,5 @@ public class ReportServiceImpl implements ReportService {
     }
 
 }
+
+
