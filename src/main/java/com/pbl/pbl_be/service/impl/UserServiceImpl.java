@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Service;
 
 import org.springframework.security.crypto.password.PasswordEncoder; // Giữ nguyên import
@@ -59,6 +61,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+
     @CachePut(value = "users", key = "#userDTO.userId") // Cập nhật cache cho người dùng cụ thể
     @CacheEvict(value = "allUsers", allEntries = true) // Xóa cache tất cả người dùng khi có cập nhật
     public UserDTO updateUser(UserDTO userDTO) {
@@ -81,6 +84,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+
     @Cacheable(value = "users", key = "#userId") // Cache người dùng theo ID
     public UserDTO getUserById(Integer userId) {
         User user = this.userRepo.findById(userId)
@@ -96,7 +100,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+
     @CacheEvict(value = {"users", "allUsers"}, key = "#userId", allEntries = false) // Xóa người dùng cụ thể và cập nhật cache tổng
+
     public void deleteUser(Integer userId) {
         User user = this.userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));

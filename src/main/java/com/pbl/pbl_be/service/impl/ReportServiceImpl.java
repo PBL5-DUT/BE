@@ -1,5 +1,6 @@
 package com.pbl.pbl_be.service.impl;
 
+
 import com.pbl.pbl_be.dto.CommentDTO;
 import com.pbl.pbl_be.dto.PostDTO;
 import com.pbl.pbl_be.dto.ReportDTO;
@@ -28,6 +29,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private ReportRepository reportRepository;
+
     @Autowired
     private PostRepository postRepository;
     @Autowired
@@ -57,6 +59,7 @@ public class ReportServiceImpl implements ReportService {
         }
         this.reportRepository.save(report);
     }
+
 
 
     public List<PostDTO> getPendingPostReports(int projectId) {
@@ -120,5 +123,3 @@ public class ReportServiceImpl implements ReportService {
     }
 
 }
-
-

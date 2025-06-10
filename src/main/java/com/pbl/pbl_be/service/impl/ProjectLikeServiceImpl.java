@@ -46,6 +46,7 @@ public class ProjectLikeServiceImpl implements ProjectLikeService {
         projectLikeRepository.save(like);
     }
 
+
     @Override
     @Transactional
     @CacheEvict(value = "projectLikes", allEntries = true) // Xóa toàn bộ cache liên quan đến project likes

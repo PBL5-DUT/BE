@@ -8,6 +8,7 @@ import com.pbl.pbl_be.repository.ProjectRepository;
 import com.pbl.pbl_be.service.ForumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+
 import org.springframework.cache.annotation.CachePut; // Đã thêm
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -48,12 +49,15 @@ public class ForumServiceImpl implements ForumService {
     }
 
     @Override
+
     @CacheEvict(value = {"forums", "projectForums"}, allEntries = true) // Điều chỉnh
+
     public void deleteForum(int forumId) {
         Forum forumToDelete = this.forumRepository.findById(forumId)
                 .orElseThrow(() -> new IllegalArgumentException("Forum not found with ID: " + forumId));
         this.forumRepository.delete(forumToDelete);
     }
+
 
     @Override
     @Cacheable(value = "forums", key = "#forumId")

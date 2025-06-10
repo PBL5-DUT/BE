@@ -4,6 +4,11 @@ import com.pbl.pbl_be.dto.ProjectDTO;
 import com.pbl.pbl_be.exception.ResourceNotFoundException;
 import com.pbl.pbl_be.mapper.ProjectMapper;
 import com.pbl.pbl_be.model.*;
+import com.pbl.pbl_be.repository.ProjectLikeRepository;
+import com.pbl.pbl_be.repository.ProjectRepository;
+import com.pbl.pbl_be.repository.ProjectRequestRepository;
+import com.pbl.pbl_be.repository.ForumRepository;
+import com.pbl.pbl_be.repository.UserRepository;
 import com.pbl.pbl_be.repository.*;
 import com.pbl.pbl_be.service.ProjectService;
 
@@ -44,6 +49,7 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectRequestRepository projectRequestRepo;
 
     @Override
+
     @Cacheable(value = "allProjects") // Tên cache rõ ràng hơn
     public List<ProjectDTO> getAllProjects() {
         List<Project> projects = projectRepo.findAll();
@@ -70,6 +76,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+
     @CacheEvict(value = {"allProjects", "projectsByPm", "projectsByStatus", "projectsRemaining", "projectsLiked", "joinedProjects", "childProjects", "userProjects", "projectDetails"}, allEntries = true)
     public ProjectDTO createProject(ProjectDTO projectDto) {
         Project project = projectMapper.toEntity(projectDto);
@@ -78,11 +85,13 @@ public class ProjectServiceImpl implements ProjectService {
         project.setStatus(Project.Status.pending);
         Project savedProject = this.projectRepo.save(project);
 
+
         Forum forum = new Forum();
         forum.setProject(project);
         forum.setCreatedAt(LocalDateTime.now());
         forum.setTitle("Ban tổ chức");
         this.forumRepo.save(forum);
+
 
         ProjectRequest projectRequest = new ProjectRequest();
         projectRequest.setProject(savedProject);
@@ -95,6 +104,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+
     @CachePut(value = "projectDetails", key = "#projectId + '-' + #projectDto.pmId") // Cập nhật cache chi tiết dự án sau khi update
     @CacheEvict(value = {"allProjects", "projectsByPm", "projectsByStatus", "projectsRemaining", "projectsLiked", "joinedProjects", "childProjects", "userProjects"}, allEntries = true)
     // Xóa các cache danh sách có thể bị ảnh hưởng
@@ -117,6 +127,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+
     @Cacheable(value = "projectsByStatus", key = "#sort + '-' + #userId") // Tên cache rõ ràng hơn
     public List<ProjectDTO> getProjectsByStatusSorted(String sort, Integer userId) {
         List<Project.Status> desiredStatuses = Arrays.asList(
@@ -153,6 +164,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+
     @Cacheable(value = "projectsRemaining", key = "#userId") // Tên cache rõ ràng hơn
     public List<ProjectDTO> getProjectsByStatusRemaining(Integer userId) {
         List<Project.Status> desiredStatuses = Arrays.asList(
@@ -177,6 +189,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+
     @Cacheable(value = "projectsLiked", key = "#userId") // Tên cache rõ ràng hơn
     public List<ProjectDTO> getProjectsLiked(Integer userId) {
         User user = this.userRepo.findById(userId)
@@ -199,6 +212,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+
     @Cacheable(value = "joinedProjects", key = "#userId") // Tên cache rõ ràng hơn
     public List<ProjectDTO> getJoinedProjects(Integer userId) {
         User user = this.userRepo.findById(userId)
@@ -224,6 +238,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+
     @Cacheable(value = "childProjects", key = "#parentProjectId + '-' + #userId") // Tên cache rõ ràng hơn
     public List<ProjectDTO> getChildProjectsByParentId(Integer parentProjectId, Integer userId) {
         List<Project> childProjects = this.projectRepo.findByParentProject_ProjectIdAndStatus(parentProjectId, Project.Status.approved);
@@ -268,6 +283,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+
     @CacheEvict(value = {"allProjects", "projectsByPm", "projectsByStatus", "projectsRemaining", "projectsLiked", "joinedProjects", "childProjects", "userProjects", "projectDetails"}, allEntries = true)
     // Xóa toàn bộ cache khi xóa dự án
     public void deleteProject(Integer projectId) {

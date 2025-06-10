@@ -22,6 +22,7 @@ public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepository;
 
     @Autowired
+
     private CommentMapper commentMapper;
 
 
@@ -38,6 +39,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+
     @CacheEvict(value = "commentsByPost", key = "#commentDTO.postId", allEntries = false)
     public void addComment(CommentDTO commentDTO) {
         Comment comment = commentMapper.toEntity(commentDTO);
@@ -55,6 +57,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+
     @CacheEvict(value = "commentsByPost", key = "#commentDTO.postId")
     public void updateComment( CommentDTO commentDTO) {
         Comment comment = commentMapper.toEntity(commentDTO);
@@ -64,5 +67,6 @@ public class CommentServiceImpl implements CommentService {
         } else {
             throw new IllegalArgumentException("Comment ID must not be null for update");
         }
+
     }
 }

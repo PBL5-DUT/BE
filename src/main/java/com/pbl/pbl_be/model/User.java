@@ -65,6 +65,7 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>(); // Initialize as an empty HashSet
+    // Implement UserDetails cho Spring Security
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
