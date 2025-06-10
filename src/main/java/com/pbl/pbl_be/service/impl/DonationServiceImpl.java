@@ -27,8 +27,6 @@ public class DonationServiceImpl implements DonationService {
     @Autowired
     private DonationMapper donationMapper;
 
-    @Autowired
-    private DonationMapper donationMapper;
 
     @Override
     @Transactional(readOnly = true)
