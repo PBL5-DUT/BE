@@ -89,11 +89,12 @@ public void approvePost(Integer postId) {
     if (post == null) {
         throw new RuntimeException("Post not found");
  }
+    }
 
 
 @Override
 @CacheEvict(value = "postsByForumAndStatus", allEntries = true)
-public void rejectPost(Integer postId) {
+public void rejectPost (Integer postId) {
     Post post = postRepository.findByPostId(postId);
     if (post == null) {
         throw new RuntimeException("Post not found");
