@@ -133,7 +133,8 @@ public class ProjectServiceImpl implements ProjectService {
         List<Project.Status> desiredStatuses = Arrays.asList(
                 Project.Status.approved,
                 Project.Status.finished,
-                Project.Status.locked
+                Project.Status.locked,
+                Project.Status.lockedpending
         );
         List<Project> projects = this.projectRepo.findByStatusIn(desiredStatuses);
         List<ProjectDTO> projectDTOs = projects.stream()
@@ -170,7 +171,8 @@ public class ProjectServiceImpl implements ProjectService {
         List<Project.Status> desiredStatuses = Arrays.asList(
                 Project.Status.approved,
                 Project.Status.finished,
-                Project.Status.locked
+                Project.Status.locked,
+                Project.Status.lockedpending
         );
         List<Project> approvedProjects = this.projectRepo.findByStatusIn(desiredStatuses);
 
@@ -229,9 +231,10 @@ public class ProjectServiceImpl implements ProjectService {
         // Loại bỏ các dự án có trạng thái KHÓA, ĐANG CHỜ DUYỆT, HOÀN THÀNH
         // Nếu mục đích của "joinedProjects" là chỉ hiển thị các dự án đang hoạt động
         projectDTOs.removeIf(projectDTO ->
-                projectDTO.getStatus().equals("locked") ||
-                        projectDTO.getStatus().equals("pending") || // Thêm trạng thái pending
-                        projectDTO.getStatus().equals("finished")
+                projectDTO.getStatus().equals("locked") &&
+                        !projectDTO.getStatus().equals("pending") && // Thêm trạng thái pending
+                        ! projectDTO.getStatus().equals("finished") &&
+                        ! projectDTO.getStatus().equals("lockedpending") // Thêm trạng thái lockedpending
         );
         return projectDTOs;
 
