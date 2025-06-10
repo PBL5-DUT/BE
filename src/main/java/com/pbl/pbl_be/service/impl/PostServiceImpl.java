@@ -91,7 +91,10 @@ public void approvePost(Integer postId) {
     Post post = postRepository.findByPostId(postId);
     if (post == null) {
         throw new RuntimeException("Post not found");
- }
+    }
+    post.setStatus(Post.Status.approved);
+    post.setUpdatedAt(LocalDateTime.now());
+    postRepository.save(post);
     }
 
 
@@ -109,9 +112,9 @@ public void rejectPost (Integer postId) {
 }
 
     @Override
+    @CacheEvict(value = "postsByForumAndStatus", allEntries = true)
     public List<PostDTO> getPendingPosts(Integer forumId, Post.Status status) {
         List<Post> posts = postRepository.findByForum_ForumIdAndStatus(forumId, status);
-
 
         return posts.stream()
                 .map(post -> postMapper.toDTO(post, 0)) // Assuming 0 is the userId for the current user
