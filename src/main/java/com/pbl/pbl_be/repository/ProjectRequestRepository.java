@@ -22,7 +22,7 @@ public interface ProjectRequestRepository extends JpaRepository<ProjectRequest, 
 
     Boolean existsByProject_ProjectIdAndUser_IdAndStatus(Integer projectId, Integer userId, ProjectRequest.Status status);
 
-
+    List<ProjectRequest> findByUser(User user);
 
     @Query("SELECT pr.user FROM ProjectRequest pr WHERE pr.project.projectId = :projectId AND pr.status = :status")
     List<User> findUsersByProjectIdAndStatus(@Param("projectId") Integer projectId,

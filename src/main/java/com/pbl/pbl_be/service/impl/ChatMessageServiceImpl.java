@@ -22,7 +22,6 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private ChatMessageRepository chatMessageRepository;
 
     @Override
-    @Cacheable(value = "chatMessages", key = "#projectId")
     public List<ChatMessageDTO> getMessagesByProjectId(Integer projectId) {
         List<ChatMessage> chatMessages = chatMessageRepository.findByProject_ProjectId(projectId);
         return chatMessages.stream()
@@ -31,7 +30,6 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     @Override
-    @CacheEvict(value = "chatMessages", key = "#messageDTO.projectId")
     public ChatMessageDTO saveMessage(ChatMessageDTO messageDTO) {
         ChatMessage chatMessage = chatMessageMapper.toEntity(messageDTO);
         chatMessage.setCreatedAt(java.time.LocalDateTime.now());
