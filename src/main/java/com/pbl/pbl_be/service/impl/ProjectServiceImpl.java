@@ -155,7 +155,12 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Cacheable(value = "projectsRemaining", key = "#userId") // Tên cache rõ ràng hơn
     public List<ProjectDTO> getProjectsByStatusRemaining(Integer userId) {
-        List<Project> approvedProjects = this.projectRepo.findProjectsByStatus(Project.Status.approved);
+        List<Project.Status> desiredStatuses = Arrays.asList(
+                Project.Status.approved,
+                Project.Status.finished,
+                Project.Status.locked
+        );
+        List<Project> approvedProjects = this.projectRepo.findByStatusIn(desiredStatuses);
 
         LocalDateTime now = LocalDateTime.now();
         List<ProjectDTO> projectDTOs = approvedProjects.stream()
@@ -198,15 +203,24 @@ public class ProjectServiceImpl implements ProjectService {
     public List<ProjectDTO> getJoinedProjects(Integer userId) {
         User user = this.userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
-        List<Project> projects = this.projectRequestRepo.findByUser_IdAndStatus(userId, ProjectRequest.Status.approved)
+        List<Project> projects = this.projectRequestRepo.findByUser(user)
                 .stream()
                 .map(ProjectRequest::getProject)
                 .collect(Collectors.toList());
+
         List<ProjectDTO> projectDTOs = projects.stream()
                 .map(project -> projectMapper.toDTO(project, userId))
                 .collect(Collectors.toList());
 
+        // Loại bỏ các dự án có trạng thái KHÓA, ĐANG CHỜ DUYỆT, HOÀN THÀNH
+        // Nếu mục đích của "joinedProjects" là chỉ hiển thị các dự án đang hoạt động
+        projectDTOs.removeIf(projectDTO ->
+                projectDTO.getStatus().equals("locked") ||
+                        projectDTO.getStatus().equals("pending") || // Thêm trạng thái pending
+                        projectDTO.getStatus().equals("finished")
+        );
         return projectDTOs;
+
     }
 
     @Override
