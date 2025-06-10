@@ -24,6 +24,7 @@ public class DonationMapper {
         dto.setTxnRef(donation.getTxnRef());
         dto.setGoodDescription(donation.getGoodDescription());
         dto.setProjectId(donation.getProjectId());
+        dto.setType(donation.getType());
         dto.setAmount(donation.getAmount());
         dto.setCreatedAt(donation.getCreatedAt());
         return dto;
@@ -45,6 +46,7 @@ public class DonationMapper {
         donation.setGoodDescription(dto.getGoodDescription());
         donation.setProjectId(dto.getProjectId());
         donation.setAmount(dto.getAmount());
+        donation.setType(dto.getType());
         donation.setCreatedAt(dto.getCreatedAt());
         return donation;
     }
