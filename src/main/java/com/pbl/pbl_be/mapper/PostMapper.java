@@ -68,11 +68,11 @@ public class PostMapper {
             dto.setIsLiked(false);
         }
 
-        dto.setLikeCount(likeRepository.countLikesByPost(post)); // Assuming Post has a getLikes() method
+        dto.setLikeCount(likeRepository.countLikesByPost(post));
 
         dto.setPostImages(postImageRepository.findByPost_PostId(post.getPostId()).stream()
                 .map(postImageMapper::toDTO)
-                .collect(Collectors.toList()));// Assuming Post has a getPostImages() method
+                .collect(Collectors.toList()));
 
         return dto;
     }

@@ -47,14 +47,15 @@ public class ReportController {
     public ResponseEntity<Void> resolveReport(
             @RequestHeader("Authorization") String token,
             @PathVariable int reportId) {
-
-        return null;
+        reportService.resolveReport(reportId);
+        return ResponseEntity.ok().build();
     }
+
     @PutMapping("/dismiss/{reportId}")
     public ResponseEntity<Void> dismissReport(
             @RequestHeader("Authorization") String token,
             @PathVariable int reportId) {
-
-        return null;
+        reportService.dismissReport(reportId);
+        return ResponseEntity.ok().build();
     }
 }
