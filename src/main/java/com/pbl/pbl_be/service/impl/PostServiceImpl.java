@@ -124,6 +124,4 @@ public void rejectPost(Integer postId) {
                 .collect(Collectors.toList());
     }
 
-
-
 }
