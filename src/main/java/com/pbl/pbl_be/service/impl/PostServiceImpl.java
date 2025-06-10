@@ -8,6 +8,7 @@ import com.pbl.pbl_be.repository.*;
 import com.pbl.pbl_be.service.PostService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.cache.annotation.CacheEvict; // Đã thêm
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -73,34 +74,42 @@ public class PostServiceImpl implements PostService {
         if (likeRepository.existsByPost_PostIdAndUser_UserId(postId, userId)) {
             likeRepository.deleteByPost_PostIdAndUser_UserId(postId, userId);
         } else {
-            likeRepository.save(new Like(
+     likeRepository.save(new Like(
                     postRepository.findById(postId.longValue()).orElseThrow(() -> new IllegalArgumentException("Post not found with ID: " + postId)),
                     userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId))
             ));
         }
+
+}
+
+@Override
+@CacheEvict(value = "postsByForumAndStatus", allEntries = true)
+public void approvePost(Integer postId) {
+    Post post = postRepository.findByPostId(postId);
+    if (post == null) {
+        throw new RuntimeException("Post not found");
+ }
+
+
+@Override
+@CacheEvict(value = "postsByForumAndStatus", allEntries = true)
+public void rejectPost(Integer postId) {
+    Post post = postRepository.findByPostId(postId);
+    if (post == null) {
+        throw new RuntimeException("Post not found");
     }
+    post.setStatus(Post.Status.rejected);
+    post.setUpdatedAt(LocalDateTime.now());
+    postRepository.save(post);
+}
 
     @Override
-    @CacheEvict(value = "postsByForumAndStatus", allEntries = true) // Xóa toàn bộ cache khi trạng thái bài đăng thay đổi
-    public void approvePost(Integer postId) {
-        Post post = postRepository.findByPostId(postId);
-        if (post == null) {
-            throw new RuntimeException("Post not found");
-        }
-        post.setStatus(Post.Status.approved);
-        post.setUpdatedAt(LocalDateTime.now());
-        postRepository.save(post);
+    public List<PostDTO> getPendingPosts(Integer forumId, Post.Status status) {
+        List<Post> posts = postRepository.findByForum_ForumIdAndStatus(forumId, status);
+
+        return posts.stream()
+                .map(post -> postMapper.toDTO(post, 0)) // Assuming 0 is the userId for the current user
+                .collect(Collectors.toList());
     }
 
-    @Override
-    @CacheEvict(value = "postsByForumAndStatus", allEntries = true) // Xóa toàn bộ cache khi trạng thái bài đăng thay đổi
-    public void rejectPost(Integer postId) {
-        Post post = postRepository.findByPostId(postId);
-        if (post == null) {
-            throw new RuntimeException("Post not found");
-        }
-        post.setStatus(Post.Status.rejected);
-        post.setUpdatedAt(LocalDateTime.now());
-        postRepository.save(post);
-    }
 }

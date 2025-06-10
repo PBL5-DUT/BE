@@ -16,6 +16,7 @@ public class DonationDTO  {
     private Long amount;
     private Donation.Type type;
     private String txnRef;
+    private Donation.Type type;
     private String goodDescription;
     private LocalDateTime createdAt;
     private String userName;

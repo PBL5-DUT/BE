@@ -58,6 +58,7 @@ public class DonationServiceImpl implements DonationService {
     @Override
     @Transactional
     public void saveDonation(DonationDTO donationDTO) {
+        System.out.println(donationDTO.getUserId());
         Donation donation = donationMapper.toEntity(donationDTO);
         donation.setCreatedAt(LocalDateTime.now());
         this.donationRepository.save(donation);

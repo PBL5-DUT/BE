@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict; // Added this import
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 public class ReportServiceImpl implements ReportService {
 
@@ -33,4 +36,31 @@ public class ReportServiceImpl implements ReportService {
         }
         this.reportRepository.save(report);
     }
+
+
+    public List<ReportDTO> getPendingReports(Report.ReportType type) {
+        List<Report> reports;
+
+        if (type != null ) {
+            reports = reportRepository.findByReportTypeAndStatusOrderByCreatedAtDesc(type, Report.ReportStatus.valueOf("PENDING"));
+        }
+
+        return List.of();
+    }
+
+    public void resolveReport(int reportId) {
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new RuntimeException("Report not found"));
+
+
+    }
+
+    public void dismissReport(int reportId) {
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new RuntimeException("Report not found"));
+        reportRepository.save(report);
+    }
+
 }
+
+

@@ -20,6 +20,7 @@ public class DonationMapper {
         DonationDTO dto= new DonationDTO();
         dto.setDonationId(donation.getDonationId());
         dto.setUserId(donation.getUser().getUserId());
+        dto.setType(donation.getType());
         dto.setUserName(donation.getUser().getUsername());
         dto.setTxnRef(donation.getTxnRef());
         dto.setGoodDescription(donation.getGoodDescription());
@@ -42,6 +43,7 @@ public class DonationMapper {
         } else {
             donation.setUser(null);
         }
+        donation.setType(dto.getType());
         donation.setTxnRef(dto.getTxnRef());
         donation.setGoodDescription(dto.getGoodDescription());
         donation.setProjectId(dto.getProjectId());
