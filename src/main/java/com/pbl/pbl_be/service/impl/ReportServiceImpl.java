@@ -13,7 +13,7 @@ import com.pbl.pbl_be.model.Report;
 import com.pbl.pbl_be.repository.*;
 import com.pbl.pbl_be.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict; // Added this import
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -104,23 +104,27 @@ public class ReportServiceImpl implements ReportService {
                     commentDTOs.add(commentDTO);
                 }
             }
+
             return commentDTOs;
 
         }
         return null;
     }
 
+
+    @Override
     public void resolveReport(int reportId) {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new RuntimeException("Report not found"));
-
-
+        report.setStatus(Report.ReportStatus.resolved);
+        reportRepository.save(report);
     }
 
+    @Override
     public void dismissReport(int reportId) {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new RuntimeException("Report not found"));
-        reportRepository.save(report);
+        reportRepository.delete(report);
     }
 
 }

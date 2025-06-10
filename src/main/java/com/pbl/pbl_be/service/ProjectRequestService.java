@@ -15,4 +15,5 @@ public interface ProjectRequestService {
     List<UserDTO> getProjectMember(Integer projectId, Integer userId);
     List<UserDTO> getPendingProjectMembers(Integer projectId, Integer userId);
     void acceptProjectRequest(int projectId, int userId);
+
 }

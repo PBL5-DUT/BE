@@ -58,6 +58,21 @@ public class ProjectRequestController {
     public ResponseEntity<List<UserDTO>> getProjectMember(@PathVariable Integer projectId, @RequestHeader("Authorization") String token) {
         Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
         return ResponseEntity.ok(projectRequestService.getProjectMember(projectId, userId));
-
+    }
+    @GetMapping("/{projectId}/pending")
+    public ResponseEntity<List<UserDTO>> getPendingRequests(@PathVariable Integer projectId, @RequestHeader("Authorization") String token) {
+        Integer userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
+        return ResponseEntity.ok(projectRequestService.getPendingProjectMembers(projectId, userId));
+    }
+    @PutMapping("/{projectId}/accept/{userId}")
+    public ResponseEntity<?> acceptProjectRequest(
+            @PathVariable int projectId,
+            @PathVariable int userId) {
+        try {
+            projectRequestService.acceptProjectRequest(projectId, userId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
