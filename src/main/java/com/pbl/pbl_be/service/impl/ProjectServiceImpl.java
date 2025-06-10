@@ -17,6 +17,7 @@ import jakarta.transaction.Transactional; // Thêm import này
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,7 +71,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @CacheEvict(value = {"allProjects", "projectsByPm", "projectsByStatus", "projectsRemaining", "projectsLiked", "joinedProjects", "childProjects", "userProjects", "projectDetails"}, allEntries = true)
-    // Xóa tất cả các cache liên quan đến dự án khi tạo mới
     public ProjectDTO createProject(ProjectDTO projectDto) {
         Project project = projectMapper.toEntity(projectDto);
         project.setCreatedAt(LocalDateTime.now());
@@ -119,8 +119,13 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Cacheable(value = "projectsByStatus", key = "#sort + '-' + #userId") // Tên cache rõ ràng hơn
     public List<ProjectDTO> getProjectsByStatusSorted(String sort, Integer userId) {
-        List<Project> approvedProjects = this.projectRepo.findProjectsByStatus(Project.Status.approved);
-        List<ProjectDTO> projectDTOs = approvedProjects.stream()
+        List<Project.Status> desiredStatuses = Arrays.asList(
+                Project.Status.approved,
+                Project.Status.finished,
+                Project.Status.locked
+        );
+        List<Project> projects = this.projectRepo.findByStatusIn(desiredStatuses);
+        List<ProjectDTO> projectDTOs = projects.stream()
                 .map(project -> projectMapper.toDTO(project, userId))
                 .collect(Collectors.toList());
 
