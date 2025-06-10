@@ -207,10 +207,17 @@ public class ProjectServiceImpl implements ProjectService {
             }
             returnProjects.add(project);
         }
-
-        return returnProjects.stream()
+        List<ProjectDTO> projectDTOs = returnProjects.stream()
                 .map(project -> projectMapper.toDTO(project, userId))
                 .collect(Collectors.toList());
+        projectDTOs.removeIf(projectDTO ->
+                !projectDTO.getStatus().equals("approved") &&
+                        !projectDTO.getStatus().equals("finished") &&
+                        !projectDTO.getStatus().equals("locked") &&
+                        !projectDTO.getStatus().equals("lockedpending")
+        );
+
+        return projectDTOs;
     }
 
     @Override
@@ -228,13 +235,13 @@ public class ProjectServiceImpl implements ProjectService {
                 .map(project -> projectMapper.toDTO(project, userId))
                 .collect(Collectors.toList());
 
-        // Loại bỏ các dự án có trạng thái KHÓA, ĐANG CHỜ DUYỆT, HOÀN THÀNH
-        // Nếu mục đích của "joinedProjects" là chỉ hiển thị các dự án đang hoạt động
+
         projectDTOs.removeIf(projectDTO ->
                 projectDTO.getStatus().equals("locked") &&
                         !projectDTO.getStatus().equals("pending") && // Thêm trạng thái pending
                         ! projectDTO.getStatus().equals("finished") &&
                         ! projectDTO.getStatus().equals("lockedpending") // Thêm trạng thái lockedpending
+
         );
         return projectDTOs;
 
@@ -254,7 +261,6 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional // Để đảm bảo giao dịch
     @CacheEvict(value = {"projectDetails", "allProjects", "projectsByStatus", "projectsRemaining", "projectsLiked"}, allEntries = true)
-    // Xóa các cache liên quan đến lượt thích
     public void likeProject(Integer projectId, Integer userId) {
         if (this.projectLikeRepo.existsByProject_ProjectIdAndUser_Id(projectId, userId)) {
             this.projectLikeRepo.deleteByProject_ProjectIdAndUser_Id(projectId, userId);
