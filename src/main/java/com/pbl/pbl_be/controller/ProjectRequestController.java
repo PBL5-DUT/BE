@@ -23,17 +23,7 @@ public class ProjectRequestController {
         this.projectRequestService = projectRequestService;
         this.jwtTokenHelper = jwtTokenHelper;
     }
-    @PutMapping("/{projectId}/accept/{userId}")
-    public ResponseEntity<?> acceptProjectRequest(
-            @PathVariable int projectId,
-            @PathVariable int userId) {
-        try {
-            projectRequestService.acceptProjectRequest(projectId, userId);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+
 
     @PostMapping("/{projectId}/approve/{userId}")
     public ResponseEntity<Void> approveProjectRequest(@PathVariable int projectId, @PathVariable int userId) {

@@ -78,6 +78,7 @@ public class ReportServiceImpl implements ReportService {
 
                     PostDTO postDTO = postMapper.toDTO(post, 0); // Assuming 0 is the userId for the current user
                     postDTO.setReason(report.getReason());
+                    postDTO.setReportId(report.getReportId());
                     postDTOs.add(postDTO);
                 }
             }
@@ -118,6 +119,14 @@ public class ReportServiceImpl implements ReportService {
                 .orElseThrow(() -> new RuntimeException("Report not found"));
         report.setStatus(Report.ReportStatus.resolved);
         reportRepository.save(report);
+
+        if (report.getReportType() == Report.ReportType.post) {
+            Post post = postRepository.findByPostId(report.getReportItemId().intValue());
+            if (post != null) {
+                post.setStatus(Post.Status.rejected);
+                postRepository.save(post);
+            }
+        }
     }
 
     @Override
