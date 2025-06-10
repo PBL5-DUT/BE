@@ -17,6 +17,7 @@ public interface ProjectRequestRepository extends JpaRepository<ProjectRequest, 
     ProjectRequest findByProject_ProjectIdAndUser_Id(int projectId, int userId);
 
     List<ProjectRequest> findByUser_IdAndStatus(int userId, ProjectRequest.Status status);
+    List<ProjectRequest> findByUserAndStatus(User  user, ProjectRequest.Status status);
 
     Integer countApprovedParticipantsByProject(Project project);
 

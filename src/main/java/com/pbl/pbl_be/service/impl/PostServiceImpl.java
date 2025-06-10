@@ -49,6 +49,7 @@ public class PostServiceImpl implements PostService {
     @CacheEvict(value = "postsByForumAndStatus", allEntries = true) // Xóa toàn bộ cache liên quan đến bài đăng khi có bài mới
     public void createPost(PostDTO postDto) {
         Post post = new Post();
+        System.out.println("forum"+postDto.getForumId());
         post.setForum(forumRepository.findByForumId(postDto.getForumId()));
         post.setUser(userRepository.findByUserId(postDto.getUserId()));
         post.setContent(postDto.getContent());

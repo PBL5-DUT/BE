@@ -211,7 +211,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .map(project -> projectMapper.toDTO(project, userId))
                 .collect(Collectors.toList());
         projectDTOs.removeIf(projectDTO ->
-                !projectDTO.getStatus().equals("approved") &&
+                      !projectDTO.getStatus().equals("approved") &&
                         !projectDTO.getStatus().equals("finished") &&
                         !projectDTO.getStatus().equals("locked") &&
                         !projectDTO.getStatus().equals("lockedpending")
@@ -226,7 +226,7 @@ public class ProjectServiceImpl implements ProjectService {
     public List<ProjectDTO> getJoinedProjects(Integer userId) {
         User user = this.userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
-        List<Project> projects = this.projectRequestRepo.findByUser(user)
+        List<Project> projects = this.projectRequestRepo.findByUserAndStatus(user, ProjectRequest.Status.approved)
                 .stream()
                 .map(ProjectRequest::getProject)
                 .collect(Collectors.toList());
@@ -237,10 +237,10 @@ public class ProjectServiceImpl implements ProjectService {
 
 
         projectDTOs.removeIf(projectDTO ->
-                projectDTO.getStatus().equals("locked") &&
-                        !projectDTO.getStatus().equals("pending") && // Thêm trạng thái pending
-                        ! projectDTO.getStatus().equals("finished") &&
-                        ! projectDTO.getStatus().equals("lockedpending") // Thêm trạng thái lockedpending
+                        !projectDTO.getStatus().equals("approved") &&
+                        !projectDTO.getStatus().equals("finished") &&
+                        !projectDTO.getStatus().equals("locked") &&
+                        !projectDTO.getStatus().equals("lockedpending")
 
         );
         return projectDTOs;
