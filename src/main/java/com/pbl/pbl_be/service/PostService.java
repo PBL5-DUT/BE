@@ -12,4 +12,5 @@ public interface PostService {
     void likePost(Integer postId, Integer userId);
     void approvePost(Integer postId);
     void rejectPost(Integer postId);
+    List<PostDTO> getPendingPosts(Integer forumId, Post.Status status);
 }

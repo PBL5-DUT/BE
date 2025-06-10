@@ -37,7 +37,6 @@ public class Report {
     public enum ReportType {
         post, comment, user
     }
-
     public enum ReportStatus {
         pending, resolved
     }

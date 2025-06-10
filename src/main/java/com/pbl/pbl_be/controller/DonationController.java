@@ -31,6 +31,7 @@ public class DonationController {
 
     @PostMapping
     public ResponseEntity<Void> createDonation(@RequestBody DonationDTO donationDTO) {
+        System.out.println(donationDTO.getUserId());
         this.donationService.saveDonation(donationDTO);
         return ResponseEntity.ok().build();
     }

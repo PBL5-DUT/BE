@@ -51,14 +51,12 @@ public class PostController {
         return ResponseEntity.ok().build();
 
     }
-    
-    @GetMapping("/{forumId}/pending")
-    public List<PostDTO> getPendingPosts(@PathVariable Integer forumId,
-                                         @RequestHeader("Authorization") String token) {
-        int userId = jwtTokenHelper.getUserIdFromToken(token.substring(7));
-        return postService.getPostsByForumIdAndStatus(forumId, Post.Status.pending, userId);
-    }
 
+
+    @GetMapping("/{forumId}/pending")
+    public List<PostDTO> getPendingPosts(@PathVariable Integer forumId, @RequestHeader("Authorization") String token) {
+        return postService.getPendingPosts(forumId, Post.Status.pending);
+    }
   
   
     @PutMapping("/{forumId}/approve/{postId}")
