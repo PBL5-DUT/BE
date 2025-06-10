@@ -22,41 +22,47 @@ public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepository;
 
     @Autowired
-    private CommentMapper commentMapper;// Assuming you have a CommentRepository for database operations
+
+    private CommentMapper commentMapper;
 
 
     @Override
-//    @Cacheable(value = "comments", key = "#postId")
+    @Cacheable(value = "commentsByPost", key = "#postId")
     public List<CommentDTO> getCommentsByPostId(Integer postId) {
-        List<Comment> comments= commentRepository.findByPost_PostId(postId);
+        List<Comment> comments = commentRepository.findByPost_PostId(postId);
         if (comments != null && !comments.isEmpty()) {
             return comments.stream()
-                    .map(comment -> commentMapper.toDto(comment)) // Assuming 0 is the userId for the current user
+                    .map(comment -> commentMapper.toDto(comment))
                     .collect(Collectors.toList());
         }
         return null;
     }
 
     @Override
+
+    @CacheEvict(value = "commentsByPost", key = "#commentDTO.postId", allEntries = false)
     public void addComment(CommentDTO commentDTO) {
         Comment comment = commentMapper.toEntity(commentDTO);
+        comment.setCreatedAt(LocalDateTime.now());
         commentRepository.save(comment);
-
     }
 
 
-
     @Override
-    @CacheEvict(value = "comments", key = "#commentId")
+    @CacheEvict(value = "commentsByPost", key = "#commentDTO.postId")
     public void deleteComment(Integer commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("Comment not found with ID: " + commentId));
         commentRepository.deleteById(commentId);
     }
 
     @Override
-    @CachePut(value = "comments", key = "#commentDTO.commentId")
+
+    @CacheEvict(value = "commentsByPost", key = "#commentDTO.postId")
     public void updateComment( CommentDTO commentDTO) {
         Comment comment = commentMapper.toEntity(commentDTO);
         if (comment != null && comment.getCommentId() != null) {
+            comment.setCreatedAt(LocalDateTime.now()); // Update timestamp if needed
             commentRepository.save(comment);
         } else {
             throw new IllegalArgumentException("Comment ID must not be null for update");

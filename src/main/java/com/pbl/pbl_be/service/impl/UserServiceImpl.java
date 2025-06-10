@@ -15,8 +15,10 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Service;
 
+import org.springframework.security.crypto.password.PasswordEncoder; // Giữ nguyên import
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -39,6 +41,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @CacheEvict(value = "allUsers", allEntries = true) // Xóa cache tất cả người dùng khi có người dùng mới đăng ký
     public UserDTO registerNewUser(UserDTO userDTO) {
         User user = this.mm.map(userDTO, User.class);
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
@@ -53,12 +56,14 @@ public class UserServiceImpl implements UserService {
         user.getRoles().add(role);
         user.setCreatedAt(LocalDateTime.now());
         User newUser = this.userRepo.save(user);
-        return this.mm.map(newUser, UserDTO.class);
+        return this.userToDto(newUser);
     }
 
 
     @Override
-    @CachePut(value = "users", key = "#userDTO.userId")
+
+    @CachePut(value = "users", key = "#userDTO.userId") // Cập nhật cache cho người dùng cụ thể
+    @CacheEvict(value = "allUsers", allEntries = true) // Xóa cache tất cả người dùng khi có cập nhật
     public UserDTO updateUser(UserDTO userDTO) {
         int userId = userDTO.getUserId();
         User user = this.userRepo.findById(userId)
@@ -79,7 +84,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable(value = "users", key = "#userId")
+
+    @Cacheable(value = "users", key = "#userId") // Cache người dùng theo ID
     public UserDTO getUserById(Integer userId) {
         User user = this.userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
@@ -87,19 +93,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "allUsers") // Cache tất cả người dùng
     public List<UserDTO> getAllUser() {
         List<User> users = this.userRepo.findAll();
         return users.stream().map(this::userToDto).collect(Collectors.toList());
     }
 
     @Override
-    @CacheEvict(value = "users", key = "#userId")
+
+    @CacheEvict(value = {"users", "allUsers"}, key = "#userId", allEntries = false) // Xóa người dùng cụ thể và cập nhật cache tổng
+
     public void deleteUser(Integer userId) {
         User user = this.userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
         this.userRepo.delete(user);
     }
-
 
     private UserDTO userToDto(User user) {
         return this.mm.map(user, UserDTO.class);

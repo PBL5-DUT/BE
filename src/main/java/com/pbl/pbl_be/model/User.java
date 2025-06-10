@@ -48,6 +48,7 @@ public class User implements UserDetails {
     private String address;
 
     @Column(length=1000)
+
     private String avatarFilepath;
 
     @Column(name = "created_at")

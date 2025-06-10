@@ -7,7 +7,7 @@ import com.pbl.pbl_be.repository.ProjectLikeRepository;
 import com.pbl.pbl_be.repository.ProjectRepository;
 import com.pbl.pbl_be.repository.UserRepository;
 import com.pbl.pbl_be.service.ProjectLikeService;
-import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional; // Đã thêm
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,6 @@ public class ProjectLikeServiceImpl implements ProjectLikeService {
 
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
-
     private final ProjectLikeRepository projectLikeRepository;
 
     public ProjectLikeServiceImpl(ProjectRepository projectRepository, UserRepository userRepository, ProjectLikeRepository projectLikeRepository) {
@@ -27,6 +26,8 @@ public class ProjectLikeServiceImpl implements ProjectLikeService {
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = "projectLikes", allEntries = true) // Xóa toàn bộ cache liên quan đến project likes
     public void createProjectLike(Integer projectId, Integer userId) {
         if (projectLikeRepository.existsByProject_ProjectIdAndUser_Id(projectId, userId)) {
             return;
@@ -44,11 +45,14 @@ public class ProjectLikeServiceImpl implements ProjectLikeService {
 
         projectLikeRepository.save(like);
     }
+
+
     @Override
-   @CacheEvict(value = "projectLikes", key = "#projectId + '_' + #userId")
-   public void deleteProjectLike(Integer projectId, Integer userId) {
-       if (projectLikeRepository.existsByProject_ProjectIdAndUser_Id(projectId, userId)) {
-           projectLikeRepository.deleteByProject_ProjectIdAndUser_Id(projectId, userId);
-       }
-   }
+    @Transactional
+    @CacheEvict(value = "projectLikes", allEntries = true) // Xóa toàn bộ cache liên quan đến project likes
+    public void deleteProjectLike(Integer projectId, Integer userId) {
+        if (projectLikeRepository.existsByProject_ProjectIdAndUser_Id(projectId, userId)) {
+            projectLikeRepository.deleteByProject_ProjectIdAndUser_Id(projectId, userId);
+        }
+    }
 }

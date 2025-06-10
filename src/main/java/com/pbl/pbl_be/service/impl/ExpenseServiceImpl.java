@@ -4,18 +4,17 @@ import com.pbl.pbl_be.dto.DonationDTO;
 import com.pbl.pbl_be.mapper.ExpenseMapper;
 import com.pbl.pbl_be.model.Donation;
 import com.pbl.pbl_be.model.Expense;
+
 import com.pbl.pbl_be.dto.ExpenseDTO;
-import com.pbl.pbl_be.model.User;
-import com.pbl.pbl_be.repository.DonationRepository;
 import com.pbl.pbl_be.repository.ExpenseRepository;
-import com.pbl.pbl_be.repository.UserRepository;
 import com.pbl.pbl_be.service.ExpenseService;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.cache.annotation.CacheEvict;
+
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +33,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         if (expenses != null && !expenses.isEmpty()) {
             return expenses.stream()
                     .map(expense -> expenseMapper.toDto(expense)) // Assuming 0 is the userId for the current user
+
                     .collect(Collectors.toList());
         }
         return null;
@@ -46,6 +46,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         if (expenses != null && !expenses.isEmpty()) {
             return expenses.stream()
                     .map(expense -> expenseMapper.toDto(expense)) // Assuming 0 is the userId for the current user
+
                     .collect(Collectors.toList());
         }
         return null;
@@ -56,6 +57,4 @@ public class ExpenseServiceImpl implements ExpenseService {
         Expense expense = expenseMapper.toEntity(dto);
         this.expenseRepository.save(expense);
     }
-
-
 }

@@ -11,6 +11,8 @@ import com.pbl.pbl_be.repository.ProjectRepository;
 import com.pbl.pbl_be.repository.UserRepository;
 import com.pbl.pbl_be.service.ProjectRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +40,7 @@ public class ProjectRequestServiceImpl implements ProjectRequestService {
     }
 
     @Override
+    @CacheEvict(value = {"projectMembers", "projectPendingRequests"}, key = "#projectId", allEntries = true)
     public void createProjectRequest(int projectId, int userId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("Project not found with ID: " + projectId));
@@ -45,9 +48,9 @@ public class ProjectRequestServiceImpl implements ProjectRequestService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
         ProjectRequest projectRequest = new ProjectRequest();
-        projectRequest.setProject(project); // Set the project
+        projectRequest.setProject(project);
         projectRequest.setUser(user);
-        projectRequest.setCreatedAt(LocalDateTime.now());// Ensure userId exists in ProjectRequest
+        projectRequest.setCreatedAt(LocalDateTime.now());
         projectRequest.setStatus(ProjectRequest.Status.pending);
         projectRequestRepository.save(projectRequest);
     }
@@ -63,7 +66,8 @@ public class ProjectRequestServiceImpl implements ProjectRequestService {
     }
 
     @Override
-    @Cacheable(value = "projectRequests", key = "#projectId")
+
+    @Cacheable(value = "projectMembers", key = "#projectId")
     public List<UserDTO> getProjectMember(Integer projectId, Integer userId) {
         List<User> users = projectRequestRepository.findUsersByProjectIdAndStatus(projectId, ProjectRequest.Status.approved);
         return users.stream()
@@ -79,6 +83,7 @@ public class ProjectRequestServiceImpl implements ProjectRequestService {
     }
 
     @Override
+    @Cacheable(value = "projectPendingRequests", key = "#projectId")
     public List<UserDTO> getPendingProjectMembers(Integer projectId, Integer userId) {
         List<User> users = projectRequestRepository.findUsersByProjectIdAndStatus(projectId, ProjectRequest.Status.pending);
         return users.stream()
@@ -94,6 +99,7 @@ public class ProjectRequestServiceImpl implements ProjectRequestService {
     }
 
     @Override
+    @CacheEvict(value = {"projectMembers", "projectPendingRequests"}, key = "#projectId", allEntries = true)
     public void acceptProjectRequest(int projectId, int userId) {
         ProjectRequest projectRequest = projectRequestRepository.findByProject_ProjectIdAndUser_Id(projectId, userId);
         if (projectRequest == null) {

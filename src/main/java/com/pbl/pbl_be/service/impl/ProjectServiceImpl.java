@@ -9,6 +9,7 @@ import com.pbl.pbl_be.repository.ProjectRepository;
 import com.pbl.pbl_be.repository.ProjectRequestRepository;
 import com.pbl.pbl_be.repository.ForumRepository;
 import com.pbl.pbl_be.repository.UserRepository;
+import com.pbl.pbl_be.repository.*;
 import com.pbl.pbl_be.service.ProjectService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,11 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 
 import org.springframework.stereotype.Service;
+import jakarta.transaction.Transactional; // Thêm import này
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,7 +49,8 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectRequestRepository projectRequestRepo;
 
     @Override
-    @Cacheable("projects")
+
+    @Cacheable(value = "allProjects") // Tên cache rõ ràng hơn
     public List<ProjectDTO> getAllProjects() {
         List<Project> projects = projectRepo.findAll();
         return projects.stream()
@@ -55,6 +59,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Cacheable(value = "projectDetails", key = "#projectId + '-' + #userId") // Cache chi tiết dự án theo người dùng
     public ProjectDTO getProjectById(Integer projectId, Integer userId) {
         Project project = projectRepo.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project", "projectId", projectId));
@@ -62,6 +67,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Cacheable(value = "projectsByPm", key = "#pmId") // Cache dự án theo PM
     public List<ProjectDTO> getProjectsByPmId(Integer pmId) {
         List<Project> projects = projectRepo.findProjectsByPmId(pmId);
         return projects.stream()
@@ -69,24 +75,23 @@ public class ProjectServiceImpl implements ProjectService {
                 .collect(Collectors.toList());
     }
 
-
-
     @Override
-    @CacheEvict(value = "projects", allEntries = true)
+
+    @CacheEvict(value = {"allProjects", "projectsByPm", "projectsByStatus", "projectsRemaining", "projectsLiked", "joinedProjects", "childProjects", "userProjects", "projectDetails"}, allEntries = true)
     public ProjectDTO createProject(ProjectDTO projectDto) {
         Project project = projectMapper.toEntity(projectDto);
         project.setCreatedAt(LocalDateTime.now());
         project.setUpdatedAt(LocalDateTime.now());
         project.setStatus(Project.Status.pending);
         Project savedProject = this.projectRepo.save(project);
-        //Tạo forum mặc định cho project
-        Forum forum= new Forum();
+
+
+        Forum forum = new Forum();
         forum.setProject(project);
         forum.setCreatedAt(LocalDateTime.now());
         forum.setTitle("Ban tổ chức");
         this.forumRepo.save(forum);
 
-        //Pm là thành viên đầu tiên của project
 
         ProjectRequest projectRequest = new ProjectRequest();
         projectRequest.setProject(savedProject);
@@ -99,7 +104,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    @CachePut(value = "projects", key = "#projectId")
+
+    @CachePut(value = "projectDetails", key = "#projectId + '-' + #projectDto.pmId") // Cập nhật cache chi tiết dự án sau khi update
+    @CacheEvict(value = {"allProjects", "projectsByPm", "projectsByStatus", "projectsRemaining", "projectsLiked", "joinedProjects", "childProjects", "userProjects"}, allEntries = true)
+    // Xóa các cache danh sách có thể bị ảnh hưởng
     public ProjectDTO updateProject(Integer projectId, ProjectDTO projectDto) {
         Project project = this.projectRepo.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project", "projectId", projectId));
@@ -119,10 +127,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    @Cacheable(value = "projects", key = "#sort + #userId")
+
+    @Cacheable(value = "projectsByStatus", key = "#sort + '-' + #userId") // Tên cache rõ ràng hơn
     public List<ProjectDTO> getProjectsByStatusSorted(String sort, Integer userId) {
-        List<Project> approvedProjects = this.projectRepo.findProjectsByStatusIn(List.of(Project.Status.approved, Project.Status.locked, Project.Status.lockedpending));
-        List<ProjectDTO> projectDTOs = approvedProjects.stream()
+        List<Project.Status> desiredStatuses = Arrays.asList(
+                Project.Status.approved,
+                Project.Status.finished,
+                Project.Status.locked
+        );
+        List<Project> projects = this.projectRepo.findByStatusIn(desiredStatuses);
+        List<ProjectDTO> projectDTOs = projects.stream()
                 .map(project -> projectMapper.toDTO(project, userId))
                 .collect(Collectors.toList());
 
@@ -150,9 +164,15 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    @Cacheable(value = "projects", key = "#userId + '_remaining'")
+
+    @Cacheable(value = "projectsRemaining", key = "#userId") // Tên cache rõ ràng hơn
     public List<ProjectDTO> getProjectsByStatusRemaining(Integer userId) {
-        List<Project> approvedProjects = this.projectRepo.findProjectsByStatus(Project.Status.approved);
+        List<Project.Status> desiredStatuses = Arrays.asList(
+                Project.Status.approved,
+                Project.Status.finished,
+                Project.Status.locked
+        );
+        List<Project> approvedProjects = this.projectRepo.findByStatusIn(desiredStatuses);
 
         LocalDateTime now = LocalDateTime.now();
         List<ProjectDTO> projectDTOs = approvedProjects.stream()
@@ -169,7 +189,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    @Cacheable (value = "projects", key = "#userId + '_liked'")
+
+    @Cacheable(value = "projectsLiked", key = "#userId") // Tên cache rõ ràng hơn
     public List<ProjectDTO> getProjectsLiked(Integer userId) {
         User user = this.userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
@@ -191,23 +212,34 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    @Cacheable(value = "projects", key = "#userId + '_joined'")
+
+    @Cacheable(value = "joinedProjects", key = "#userId") // Tên cache rõ ràng hơn
     public List<ProjectDTO> getJoinedProjects(Integer userId) {
         User user = this.userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
-        List <Project> projects=this.projectRequestRepo.findByUser_IdAndStatus(userId, ProjectRequest.Status.approved)
+        List<Project> projects = this.projectRequestRepo.findByUser(user)
                 .stream()
-                .map(projectRequest -> projectRequest.getProject())
+                .map(ProjectRequest::getProject)
                 .collect(Collectors.toList());
+
         List<ProjectDTO> projectDTOs = projects.stream()
                 .map(project -> projectMapper.toDTO(project, userId))
                 .collect(Collectors.toList());
 
+        // Loại bỏ các dự án có trạng thái KHÓA, ĐANG CHỜ DUYỆT, HOÀN THÀNH
+        // Nếu mục đích của "joinedProjects" là chỉ hiển thị các dự án đang hoạt động
+        projectDTOs.removeIf(projectDTO ->
+                projectDTO.getStatus().equals("locked") ||
+                        projectDTO.getStatus().equals("pending") || // Thêm trạng thái pending
+                        projectDTO.getStatus().equals("finished")
+        );
         return projectDTOs;
+
     }
 
     @Override
-    @Cacheable(value = "projects", key = "#parentProjectId + '_childs_' + #userId")
+
+    @Cacheable(value = "childProjects", key = "#parentProjectId + '-' + #userId") // Tên cache rõ ràng hơn
     public List<ProjectDTO> getChildProjectsByParentId(Integer parentProjectId, Integer userId) {
         List<Project> childProjects = this.projectRepo.findByParentProject_ProjectIdAndStatus(parentProjectId, Project.Status.approved);
 
@@ -216,10 +248,12 @@ public class ProjectServiceImpl implements ProjectService {
                 .collect(Collectors.toList());
     }
 
-
     @Override
+    @Transactional // Để đảm bảo giao dịch
+    @CacheEvict(value = {"projectDetails", "allProjects", "projectsByStatus", "projectsRemaining", "projectsLiked"}, allEntries = true)
+    // Xóa các cache liên quan đến lượt thích
     public void likeProject(Integer projectId, Integer userId) {
-        if( this.projectLikeRepo.existsByProject_ProjectIdAndUser_Id(projectId, userId)) {
+        if (this.projectLikeRepo.existsByProject_ProjectIdAndUser_Id(projectId, userId)) {
             this.projectLikeRepo.deleteByProject_ProjectIdAndUser_Id(projectId, userId);
         } else {
             Project project = this.projectRepo.findById(projectId)
@@ -236,19 +270,22 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    @Cacheable(value = "projects", key = "#userId + '_user_projects_' + #currentUserId")
+    @Cacheable(value = "userProjects", key = "#userId + '-' + #currentUserId") // Tên cache rõ ràng hơn
     public List<ProjectDTO> getProjectsByUserId(Integer userId, Integer currentUserId) {
         List<Project> projects = this.projectRequestRepo.findByUser_IdAndStatus(userId, ProjectRequest.Status.approved)
                 .stream()
-                .map(projectRequest -> projectRequest.getProject())
+                .map(ProjectRequest::getProject)
                 .collect(Collectors.toList());
         List<ProjectDTO> projectDTOs = projects.stream()
                 .map(project -> projectMapper.toDTO(project, currentUserId))
                 .collect(Collectors.toList());
-        return projectDTOs;    }
+        return projectDTOs;
+    }
 
     @Override
-    @CacheEvict(value = "projects", allEntries = true)
+
+    @CacheEvict(value = {"allProjects", "projectsByPm", "projectsByStatus", "projectsRemaining", "projectsLiked", "joinedProjects", "childProjects", "userProjects", "projectDetails"}, allEntries = true)
+    // Xóa toàn bộ cache khi xóa dự án
     public void deleteProject(Integer projectId) {
         Project project = this.projectRepo.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project", "projectId", projectId));
@@ -256,6 +293,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @CachePut(value = "projectDetails", key = "#projectId + '-' + #projectDto.pmId") // Cập nhật cache chi tiết dự án sau khi khóa
+    @CacheEvict(value = {"allProjects", "projectsByStatus", "projectsRemaining", "projectsLiked", "joinedProjects", "childProjects"}, allEntries = true)
     public ProjectDTO lockProject(Integer projectId, ProjectDTO projectDto) {
         Project project = this.projectRepo.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project", "projectId", projectId));
@@ -268,6 +307,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @CacheEvict(value = {"allProjects", "childProjects"}, allEntries = true) // Xóa các cache liên quan khi sao chép dự án
     public ProjectDTO copyProject(Project projectId, ProjectDTO projectDto) {
         Project project = projectMapper.toEntity(projectDto);
         project.setParentProject(projectId);
