@@ -9,6 +9,7 @@ import com.pbl.pbl_be.repository.*;
 import com.pbl.pbl_be.service.PostService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -91,6 +92,7 @@ public class PostServiceImpl implements PostService {
 }
 
 @Override
+@CacheEvict(value = "posts", allEntries = true)
 public void approvePost(Integer postId) {
     Post post = postRepository.findByPostId(postId);
     if (post == null) {
@@ -102,6 +104,7 @@ public void approvePost(Integer postId) {
 }
 
 @Override
+@CacheEvict(value = "posts", allEntries = true)
 public void rejectPost(Integer postId) {
     Post post = postRepository.findByPostId(postId);
     if (post == null) {
@@ -111,6 +114,16 @@ public void rejectPost(Integer postId) {
     post.setUpdatedAt(LocalDateTime.now());
     postRepository.save(post);
 }
+
+    @Override
+    public List<PostDTO> getPendingPosts(Integer forumId, Post.Status status) {
+        List<Post> posts = postRepository.findByForum_ForumIdAndStatus(forumId, status);
+
+        return posts.stream()
+                .map(post -> postMapper.toDTO(post, 0)) // Assuming 0 is the userId for the current user
+                .collect(Collectors.toList());
+    }
+
 
 
 }

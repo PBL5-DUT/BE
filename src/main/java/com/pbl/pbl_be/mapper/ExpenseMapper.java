@@ -23,6 +23,7 @@ public class ExpenseMapper {
             dto.setProjectId(expense.getProjectId());
             dto.setSenderId(expense.getSenderId());
             dto.setReceiverId(expense.getReceiver() != null ? expense.getReceiver().getUserId() : null);
+            dto.setReceiverName(expense.getReceiver() != null ? expense.getReceiver().getUsername() : null);
             dto.setAmount(expense.getAmount());
             dto.setPurpose(expense.getPurpose());
             dto.setCreatedAt(expense.getCreatedAt());

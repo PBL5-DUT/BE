@@ -14,6 +14,7 @@ public class ExpenseDTO  {
     private Integer projectId;
     private Integer senderId;
     private Integer receiverId;
+    private String receiverName;
     private Long amount;
     private String purpose;
     private LocalDateTime createdAt;
